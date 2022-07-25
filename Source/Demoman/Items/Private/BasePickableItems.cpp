@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Components/StaticMeshComponent.h"
-#include "../Character/public/BaseCharacter.h"
+#include "../../Items/Public/BasePickableItems.h"
 
-#include "BasePickableItems.h"
+#include "Components/StaticMeshComponent.h"
+#include "../../Character/public/BaseCharacter.h"
+
+
 
 
 ABasePickableItems::ABasePickableItems()

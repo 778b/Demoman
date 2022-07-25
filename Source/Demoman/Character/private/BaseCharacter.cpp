@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "../../Character/public/BaseCharacter.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
-#include "../../Items/Bomb.h"
+#include "../../Items/public/Bomb.h"
 
-#include "../../Character/public/BaseCharacter.h"
+
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -20,6 +22,7 @@ ABaseCharacter::ABaseCharacter()
 	PlayerCamera->SetupAttachment(PlayerCollision);
 
 	PlayerMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("PlayerMovement"));
+	PlayerMovement->MaxSpeed = MovementSpeed;
 }
 
 void ABaseCharacter::AddBombsCount(int8 AddNum)
@@ -51,6 +54,7 @@ void ABaseCharacter::AddMovementSpeed(float AddNum)
 		MovementSpeed += AddNum;
 	}
 }
+
 
 void ABaseCharacter::BeginPlay()
 {

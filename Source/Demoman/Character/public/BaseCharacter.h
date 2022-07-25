@@ -40,13 +40,13 @@ public:
 
 	const int8 MaxBombsCount = 5;
 	const int8 MaxBombsPower = 8;
-	const float MaxMovementSpeed = 500;
+	const float MaxMovementSpeed = 1000;
 
 private:
 	int8 BombsPlaced = 0;
-	int8 BombsCount = 0;
+	int8 BombsCount = 1;
 	int8 BombsPower = 3;
-	float MovementSpeed = 100;
+	float MovementSpeed = 400;
 
 protected:
 	virtual void BeginPlay() override;

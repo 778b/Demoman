@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
 #include "GameFramework/Actor.h"
 #include "Bomb.generated.h"
 
@@ -16,7 +17,8 @@ class DEMOMAN_API ABomb : public AActor
 public:	
 	ABomb();
 
-	void BlowUp();
+	UFUNCTION()
+		void BlowUp();
 
 public:
 	class UStaticMeshComponent* BombMesh;
@@ -26,8 +28,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
 private:
 	int8 Power = 3;
+
+	FTimerHandle TimerHandler;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
