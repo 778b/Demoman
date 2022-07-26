@@ -2,6 +2,8 @@
 
 #include "Bomb.h"
 
+#include "DrawDebugHelpers.h"
+#include "DamageInterface.h"
 #include "Components/StaticMeshComponent.h"
 
 
@@ -25,7 +27,7 @@ ABomb::ABomb()
 	BombMesh->OnComponentEndOverlap.AddDynamic(this, &ABomb::OnEndOverlap);
 	BombMesh->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBeginOverlap);
 
-	if (GetWorld()) GetWorld()->GetTimerManager().SetTimer(TimerHandler, this, &ABomb::BlowUp, 6.f);
+	if (GetWorld()) GetWorld()->GetTimerManager().SetTimer(TimerHandler, this, &ABomb::BlowUp, 4.f);
 
 
 }
@@ -33,8 +35,12 @@ ABomb::ABomb()
 
 void ABomb::BlowUp()
 {
-
 	OnBlowUpBomb.Execute();
+	TArray<AActor*> IgnoreActors = { this };
+	DamageInDirection(FVector(1.f, 0.f, 0.f),	IgnoreActors);
+	DamageInDirection(FVector(-1.f, 0.f, 0.f),	IgnoreActors);
+	DamageInDirection(FVector(0.f, 1.f, 0.f),	IgnoreActors);
+	DamageInDirection(FVector(0.f, -1.f, 0.f),	IgnoreActors);
 	Destroy();
 }
 
@@ -58,12 +64,6 @@ void ABomb::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 }
 
 
-void ABomb::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 ABomb* ABomb::SpawnBomb(UWorld* World, FVector Location, int8 Power)
 {
 	// TODO BombManager; but Unreal already have a his own manager :)
@@ -73,25 +73,13 @@ ABomb* ABomb::SpawnBomb(UWorld* World, FVector Location, int8 Power)
 		int32 temp = FMath::RoundToInt(a) % 100;
 		if (a > 0)
 		{
-			if (temp > 50)
-			{
-				return a + 100 - temp;	// 1260 + 100 - 60 = 1300
-			}
-			else
-			{
-				return a - temp;		// 1230 - 30 = 1200
-			}
+			if (temp > 50) return a + 100 - temp;	// 1260 + 100 - 60 = 1300
+			else return a - temp;					// 1230 - 30 = 1200
 		}
 		else
 		{
-			if (temp < -50)
-			{
-				return a - 100 - temp;	// -1480 - 100 + 80 = -1500
-			}
-			else
-			{
-				return a - temp;		// -1320 + 20 = -1300
-			}
+			if (temp < -50) return a - 100 - temp;	// -1480 - 100 + 80 = -1500
+			else return a - temp;					// -1320 + 20 = -1300
 		}
 	};
 	
@@ -104,4 +92,32 @@ ABomb* ABomb::SpawnBomb(UWorld* World, FVector Location, int8 Power)
 	tempBomb->Power = Power;
 	return tempBomb;
 }
+
+void ABomb::DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf)
+{
+	FHitResult hit;
+	FVector endTrace = (Power * 100 * Direction) + GetActorLocation();
+	FCollisionQueryParams newParam;
+	newParam.AddIgnoredActors(ignoreActorsAndSelf);
+	bool isHitted = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), endTrace, ECollisionChannel::ECC_Visibility, newParam);
+
+	// DrawDebugLine(GetWorld(), GetActorLocation(), endTrace, FColor::Emerald, false, 3.5f, 0U, 2.f);
+	if (isHitted)
+	{
+		// DrawDebugPoint(GetWorld(), hit.Location, 25.f, FColor::Red, false, 3.5f);
+
+		bool bIsPenetrated = false;
+		IDamageInterface* tempActor = Cast<IDamageInterface>(hit.Actor.Get());
+		if (tempActor)
+		{
+			tempActor->DamageActor(bIsPenetrated);
+			if (bIsPenetrated)
+			{
+				ignoreActorsAndSelf.Add(hit.Actor.Get());
+				DamageInDirection(Direction, ignoreActorsAndSelf);
+			}
+		}
+	}
+}
+
 

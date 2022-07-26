@@ -49,6 +49,13 @@ void ABaseCharacter::AddBombsPlaced(int8 AddNum)
 	BombsPlaced += AddNum;
 }
 
+void ABaseCharacter::Death()
+{
+	PlayerCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetActorScale3D(FVector(0.8f));
+	DisableInput(Cast<APlayerController>(GetController()));
+}
+
 void ABaseCharacter::AddBombsPower(int8 AddNum)
 {
 	if (AddNum + BombsPower <= MaxBombsPower)
@@ -89,4 +96,10 @@ void ABaseCharacter::SpawnBomb()
 void ABaseCharacter::RestoreBomb()
 {
 	AddBombsPlaced(-1);
+}
+
+void ABaseCharacter::DamageActor(bool& bIsPenetrated)
+{
+	bIsPenetrated = true;
+	Death();
 }

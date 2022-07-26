@@ -5,6 +5,7 @@
 
 ASupriseBlock::ASupriseBlock()
 {
+	BlockHealth = 1;
 	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Surprise.MI_Surprise"));
 	if (MeshAsset.Succeeded())
 	{

@@ -5,6 +5,7 @@
 
 AIndestructibleBlock::AIndestructibleBlock()
 {
+	BlockHealth = -1;
 	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Indestructible.MI_Indestructible"));
 	if (MeshAsset.Succeeded())
 	{

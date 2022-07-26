@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamageInterface.h"
 #include "GameFramework/Actor.h"
 #include "BaseBlock.generated.h"
 
 UCLASS()
-class DEMOMAN_API ABaseBlock : public AActor
+class DEMOMAN_API ABaseBlock : public AActor, public IDamageInterface
 {
 	GENERATED_BODY()
 	
@@ -19,15 +20,14 @@ public:
 
 	const float ChanceToDrop = 0;
 
-	void DamageBlock();
+		
+	//	IDamageInterface
+	void DamageActor(bool& bIsPenetrated) override;
 
 private:
-	int8 BlockHealth = -1;
+	
 
 protected:
 	virtual void BeginPlay() override;
-
-public:	
-	virtual void Tick(float DeltaTime) override;
-
+	int8 BlockHealth = -1;
 };

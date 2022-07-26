@@ -9,7 +9,7 @@
 
 ABaseBlock::ABaseBlock()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	BlockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlockMesh"));
 	RootComponent = BlockMesh;
@@ -22,16 +22,23 @@ ABaseBlock::ABaseBlock()
 }
 
 
+void ABaseBlock::DamageActor(bool& bIsPenetrated)
+{
+	bIsPenetrated = false;
+	if (BlockHealth == -1) return;
+	if (--BlockHealth == 0) Destroy();
+	else 
+	{
+		// Visual damage block;
+		//BlockMesh->GetMaterial(0);
+	}
+}
+
+
 void ABaseBlock::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-
-void ABaseBlock::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 

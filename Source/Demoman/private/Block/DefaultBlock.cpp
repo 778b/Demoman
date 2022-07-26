@@ -6,6 +6,7 @@
 
 ADefaultBlock::ADefaultBlock()
 {
+	BlockHealth = 1;
 	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Default.MI_Default"));
 	if (MeshAsset.Succeeded())
 	{

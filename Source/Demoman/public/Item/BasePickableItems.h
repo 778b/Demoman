@@ -15,7 +15,7 @@ class DEMOMAN_API ABasePickableItems : public AActor
 public:	
 	ABasePickableItems();
 
-	virtual void Consume(class BaseCharacter* InstigatorChar) PURE_VIRTUAL(ABasePickableItems::Consume, );
+	virtual void Consume(class ABaseCharacter* InstigatorChar) PURE_VIRTUAL(ABasePickableItems::Consume, );
 
 public:
 	class UStaticMeshComponent* ItemMesh;
@@ -24,9 +24,5 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnBeginOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
-public:	
-	virtual void Tick(float DeltaTime) override;
-
+		void OnBeginOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

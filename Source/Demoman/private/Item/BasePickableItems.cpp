@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BasePickableItems.h"
+#include "Item/BasePickableItems.h"
 
+#include "Character/BaseCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Character/BaseCharacter.h"
 
@@ -26,11 +27,11 @@ void ABasePickableItems::BeginPlay()
 
 void ABasePickableItems::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	ABaseCharacter* tempCharacter = Cast<ABaseCharacter>(OtherActor);
+	if (tempCharacter)
+	{
+		Consume(tempCharacter);
+	}
 }
 
-void ABasePickableItems::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 

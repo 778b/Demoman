@@ -35,12 +35,14 @@ protected:
 
 
 private:
-	int8 Power = 3;
+	int8 Power = 2;
 
 	FTimerHandle TimerHandler;
 
 public:	
-	virtual void Tick(float DeltaTime) override;
-
 	static ABomb* SpawnBomb(UWorld* World, FVector Location, int8 Power = 0);
+
+private:
+	void DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf);
+
 };
