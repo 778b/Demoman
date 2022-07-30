@@ -5,7 +5,7 @@
 #include "ItemsFactory.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
-#include "Character/BaseCharacter.h"
+#include "Game/BaseCharacter.h"
 
 
 

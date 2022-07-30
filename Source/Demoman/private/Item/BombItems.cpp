@@ -4,7 +4,7 @@
 
 #include "ItemsFactory.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Character/BaseCharacter.h"
+#include "Game/BaseCharacter.h"
 
 ABombItems::ABombItems()
 {

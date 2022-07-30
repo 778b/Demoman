@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/NPCCharacter.h"
+#include "AI/NPCCharacter.h"
 
 NPCCharacter::NPCCharacter()
 {

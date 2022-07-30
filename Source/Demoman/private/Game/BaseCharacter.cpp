@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Character/BaseCharacter.h"
+#include "Game/BaseCharacter.h"
 
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"

@@ -1,8 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "DemomanGameModeBase.h"
+#include "Game/DemomanGameModeBase.h"
 
-#include "Character/PlayerCharacter.h"
+#include "Player/PlayerCharacter.h"
 
 ADemomanGameModeBase::ADemomanGameModeBase()
 {
