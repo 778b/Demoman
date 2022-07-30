@@ -15,5 +15,7 @@ class DEMOMAN_API ASpeedItems : public ABasePickableItems
 	GENERATED_BODY()
 	
 public:
+	ASpeedItems();
+
 	void Consume(class ABaseCharacter* InstigatorChar) override;
 };

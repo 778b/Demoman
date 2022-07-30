@@ -2,6 +2,8 @@
 
 #include "Character/BaseCharacter.h"
 
+#include "GameFramework/PlayerController.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -83,14 +85,14 @@ void ABaseCharacter::SpawnBomb()
 {
 	if (GetCountBombs() - GetPlacedBombs() > 0)
 	{
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, "Bomb Placed");
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, "Bomb Placed");
 
 		AddBombsPlaced(1);
 
 		ABomb* tempBomb = ABomb::SpawnBomb(GetWorld(), GetActorLocation(), GetBombsPower());
 		tempBomb->OnBlowUpBomb.BindUFunction(this, "RestoreBomb");
 	}
-	else if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, "Bomb Unplaced");
+	//else if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Emerald, "Bomb Unplaced");
 }
 
 void ABaseCharacter::RestoreBomb()

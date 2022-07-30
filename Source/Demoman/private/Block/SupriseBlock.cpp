@@ -3,12 +3,15 @@
 
 #include "Block/SupriseBlock.h"
 
+#include "UObject/ConstructorHelpers.h"
+
 ASupriseBlock::ASupriseBlock()
 {
 	BlockHealth = 1;
-	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Surprise.MI_Surprise"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Block/MI_Surprise.MI_Surprise"));
 	if (MeshAsset.Succeeded())
 	{
 		BlockMesh->SetMaterial(0, MeshAsset.Object);
 	}
+	SetChanceToDrop(85.f);
 }

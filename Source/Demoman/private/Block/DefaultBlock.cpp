@@ -2,6 +2,7 @@
 
 #include "Block/DefaultBlock.h"
 
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/MaterialInstance.h"
 
 ADefaultBlock::ADefaultBlock()

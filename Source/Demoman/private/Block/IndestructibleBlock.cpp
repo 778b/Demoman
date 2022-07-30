@@ -3,10 +3,12 @@
 
 #include "Block/IndestructibleBlock.h"
 
+#include "UObject/ConstructorHelpers.h"
+
 AIndestructibleBlock::AIndestructibleBlock()
 {
 	BlockHealth = -1;
-	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Indestructible.MI_Indestructible"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Block/MI_Indestructible.MI_Indestructible"));
 	if (MeshAsset.Succeeded())
 	{
 		BlockMesh->SetMaterial(0, MeshAsset.Object);

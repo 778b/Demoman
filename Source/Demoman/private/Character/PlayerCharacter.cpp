@@ -2,7 +2,7 @@
 
 #include "Character/PlayerCharacter.h"
 
-
+#include "Components/InputComponent.h"
 
 
 APlayerCharacter::APlayerCharacter()

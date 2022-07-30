@@ -19,5 +19,5 @@ class DEMOMAN_API IDamageInterface
 	GENERATED_BODY()
 public:
 
-	virtual void DamageActor(bool& bIsPenetrated) { check(true); };
+	virtual void DamageActor(bool& bIsPenetrated) = 0;
 };

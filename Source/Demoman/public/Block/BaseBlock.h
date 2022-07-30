@@ -18,14 +18,18 @@ public:
 public:
 	class UStaticMeshComponent* BlockMesh;
 
-	const float ChanceToDrop = 0;
+	float GetChanceToDrop() { return ChanceToDrop; };
+	void SetChanceToDrop(float newChance);
 
-		
+public:
+
+	void DropItem();
+
 	//	IDamageInterface
 	void DamageActor(bool& bIsPenetrated) override;
 
 private:
-	
+	float ChanceToDrop = 0;					// 0.f - 100.f
 
 protected:
 	virtual void BeginPlay() override;

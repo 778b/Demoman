@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/EngineTypes.h"
+
 #include "GameFramework/Actor.h"
 #include "Bomb.generated.h"
 
@@ -22,6 +22,8 @@ public:
 
 public:
 	class UStaticMeshComponent* BombMesh;
+
+	class UParticleSystem* ExplodeParticle;
 
 	FBombDemolitionDelegate OnBlowUpBomb;
 
@@ -43,6 +45,7 @@ public:
 	static ABomb* SpawnBomb(UWorld* World, FVector Location, int8 Power = 0);
 
 private:
-	void DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf);
-
+	bool DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf, FVector& End);
+	void ShowParticle(FVector End, FColor color);
+	static float SetPositionOffset100(float num);
 };

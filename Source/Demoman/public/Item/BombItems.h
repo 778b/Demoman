@@ -15,5 +15,7 @@ class DEMOMAN_API ABombItems : public ABasePickableItems
 	GENERATED_BODY()
 	
 public:
+	ABombItems();
+
 	void Consume(class ABaseCharacter* InstigatorChar) override;
 };
