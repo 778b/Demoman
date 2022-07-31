@@ -5,7 +5,8 @@
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "Components/SphereComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Bomb.h"
@@ -15,10 +16,12 @@
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	PlayerCollision = CreateDefaultSubobject<USphereComponent>(TEXT("GameCollision"));
-	RootComponent = PlayerCollision;
-	PlayerCollision->SetCollisionProfileName("Pawn");
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	JumpMaxCount = 0;
+	bReplicates = true;
+	 
 
 	PlayerModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GameModel"));
 	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Models/Cube.Cube"));
@@ -27,14 +30,15 @@ ABaseCharacter::ABaseCharacter()
 		PlayerModel->SetStaticMesh(MeshAsset.Object);
 	}
 	
-
-	PlayerModel->SetupAttachment(PlayerCollision);
+	GetCapsuleComponent()->SetCapsuleSize(35.f, 35.f);
+	GetCapsuleComponent()->bHiddenInGame = false;
+	PlayerModel->SetupAttachment(RootComponent);
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
-	PlayerCamera->SetupAttachment(PlayerCollision);
+	PlayerCamera->SetupAttachment(RootComponent);
 	PlayerCamera->SetRelativeLocationAndRotation(FVector(-50.f, 0.f, 620.f), FRotator(-85.f, 0.f,0.f));
 
-	PlayerMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("PlayerMovement"));
-	PlayerMovement->MaxSpeed = MovementSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+	GetCharacterMovement()->MaxAcceleration = 2000;
 }
 
 void ABaseCharacter::AddBombsCount(int8 AddNum)
@@ -51,10 +55,9 @@ void ABaseCharacter::AddBombsPlaced(int8 AddNum)
 	BombsPlaced += AddNum;
 }
 
-void ABaseCharacter::Death()
+void ABaseCharacter::Death_Implementation()
 {
-	PlayerCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetActorScale3D(FVector(0.8f));
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DisableInput(Cast<APlayerController>(GetController()));
 }
 
@@ -71,6 +74,7 @@ void ABaseCharacter::AddMovementSpeed(float AddNum)
 	if (AddNum + MovementSpeed <= MaxMovementSpeed)
 	{
 		MovementSpeed += AddNum;
+		GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 	}
 }
 
@@ -81,7 +85,7 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::SpawnBomb()
+void ABaseCharacter::SpawnBomb_Implementation()
 {
 	if (GetCountBombs() - GetPlacedBombs() > 0)
 	{

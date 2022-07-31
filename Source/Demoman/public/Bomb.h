@@ -17,9 +17,6 @@ class DEMOMAN_API ABomb : public AActor
 public:	
 	ABomb();
 
-	UFUNCTION()
-		void BlowUp();
-
 public:
 	class UStaticMeshComponent* BombMesh;
 
@@ -46,6 +43,18 @@ public:
 
 private:
 	bool DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf, FVector& End);
-	void ShowParticle(FVector End, FColor color);
+
+	UFUNCTION(Reliable, Server)
+		void BlowUp();
+		void BlowUp_Implementation();
+
+	UFUNCTION(Reliable, NetMulticast)
+		void ShowParticle(FVector End);
+		void ShowParticle_Implementation(FVector End);
+
+	UFUNCTION(Reliable, NetMulticast)
+		void ShowParticleCenter();
+		void ShowParticleCenter_Implementation();
+
 	static float SetPositionOffset100(float num);
 };

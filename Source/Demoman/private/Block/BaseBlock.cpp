@@ -12,6 +12,7 @@
 ABaseBlock::ABaseBlock()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 
 	BlockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlockMesh"));
 	RootComponent = BlockMesh;
@@ -33,7 +34,7 @@ void ABaseBlock::SetChanceToDrop(float newChance)
 	else check(false);
 }
 
-void ABaseBlock::DropItem()
+void ABaseBlock::DropItem_Implementation()
 {
 	float calculus = FMath::RandRange(0.f, 100.f);
 	if (calculus < ChanceToDrop)

@@ -4,18 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "DamageInterface.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class DEMOMAN_API ABaseCharacter : public APawn, public IDamageInterface
+class DEMOMAN_API ABaseCharacter : public ACharacter, public IDamageInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABaseCharacter();
 
-	void SpawnBomb();
+	UFUNCTION(Reliable, Server)
+		void SpawnBomb();
+		virtual void SpawnBomb_Implementation();
+	UFUNCTION(Reliable, Server)
+		void Death();
+	virtual void Death_Implementation();
 
 	int8 GetPlacedBombs()		{ return BombsPlaced;	}
 	int8 GetCountBombs()		{ return BombsCount;	}
@@ -27,13 +32,13 @@ public:
 	void AddMovementSpeed(float AddNum);
 private:
 	void AddBombsPlaced(int8 AddNum);
-	void Death();
+
 
 public:
-	class USphereComponent* PlayerCollision;
-	class UStaticMeshComponent* PlayerModel;
-	class UCameraComponent* PlayerCamera;
-	class UFloatingPawnMovement* PlayerMovement;
+	UPROPERTY()
+		class UStaticMeshComponent* PlayerModel;
+	UPROPERTY()
+		class UCameraComponent* PlayerCamera;
 
 
 	const int8 MaxBombsCount = 5;

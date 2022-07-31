@@ -22,14 +22,16 @@ public:
 	void SetChanceToDrop(float newChance);
 
 public:
-
-	void DropItem();
+	UFUNCTION(Reliable, Server)
+		void DropItem();
+		void DropItem_Implementation();
 
 	//	IDamageInterface
 	void DamageActor(bool& bIsPenetrated) override;
 
 private:
-	float ChanceToDrop = 0;					// 0.f - 100.f
+	// 0.f - 100.f
+	float ChanceToDrop = 0;					
 
 protected:
 	virtual void BeginPlay() override;

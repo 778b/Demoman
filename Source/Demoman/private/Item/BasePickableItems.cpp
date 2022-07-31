@@ -13,6 +13,8 @@
 ABasePickableItems::ABasePickableItems()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+
 	PrimaryActorTick.TickInterval = 0.01f;
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemsMesh"));
 	RootComponent = ItemMesh;

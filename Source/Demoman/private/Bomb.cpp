@@ -14,6 +14,9 @@
 ABomb::ABomb()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
+	
+
 	BombMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BombMesh"));
 	RootComponent = BombMesh;
 
@@ -37,19 +40,20 @@ ABomb::ABomb()
 }
 
 
-void ABomb::BlowUp()
+void ABomb::BlowUp_Implementation()
 {
-	OnBlowUpBomb.Execute();
+	if (OnBlowUpBomb.IsBound()) OnBlowUpBomb.Execute();
 	TArray<AActor*> IgnoreActors = { this };
 	FVector EndParticleLocation;
-	if (DamageInDirection(FVector(	1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation, FColor::Black);
-	if (DamageInDirection(FVector(	-1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation, FColor::Blue);
-	if (DamageInDirection(FVector(	0.f, 1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation, FColor::Emerald);
-	if (DamageInDirection(FVector(	0.f, -1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation, FColor::Red);
+	if (DamageInDirection(FVector(	1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
+	if (DamageInDirection(FVector(	-1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
+	if (DamageInDirection(FVector(	0.f, 1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
+	if (DamageInDirection(FVector(	0.f, -1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeParticle, GetActorTransform(), true, EPSCPoolMethod::AutoRelease);
+	ShowParticleCenter();
 	Destroy();
 }
+
 
 void ABomb::BeginPlay()
 {
@@ -61,7 +65,11 @@ void ABomb::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Other
 {
 	TSet<AActor*> tempArray;
 	BombMesh->GetOverlappingActors(tempArray);
-	if (tempArray.Num() == 0) BombMesh->SetCollisionProfileName("BlockAllDynamic");
+	if (tempArray.Num() == 0)
+	{
+		BombMesh->SetCollisionProfileName("BlockAllDynamic");
+		BombMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Ignore);
+	}
 	return;
 }
 
@@ -130,9 +138,8 @@ bool ABomb::DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAn
 	return true;
 }
 
-void ABomb::ShowParticle(FVector End, FColor color)
+void ABomb::ShowParticle_Implementation(FVector End)
 {
-	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeParticle, FTransform(FRotator(0.f), End, FVector(1.f)), true, EPSCPoolMethod::AutoRelease);
 	End.Z = GetActorLocation().Z;
 	FVector DirectionBack = GetActorLocation() - End; // EndTrace;		50% of EndTrace;
 	DirectionBack.Normalize();
@@ -148,6 +155,11 @@ void ABomb::ShowParticle(FVector End, FColor color)
 		}
 		else break;
 	}
+}
+
+void ABomb::ShowParticleCenter_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeParticle, GetActorTransform(), true, EPSCPoolMethod::AutoRelease);
 }
 
 float ABomb::SetPositionOffset100(float num)
