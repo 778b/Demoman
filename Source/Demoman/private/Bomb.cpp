@@ -44,15 +44,10 @@ void ABomb::BlowUp_Implementation()
 {
 	if (OnBlowUpBomb.IsBound()) OnBlowUpBomb.Execute();
 	TArray<AActor*> IgnoreActors = { this };
-	FVector EndParticleLocation;
-	DamageInDirection(FVector(1.f, 0.f, 0.f), IgnoreActors, EndParticleLocation);
-	ShowParticle(EndParticleLocation);
-	DamageInDirection(FVector(-1.f, 0.f, 0.f), IgnoreActors, EndParticleLocation);
-	ShowParticle(EndParticleLocation);
-	DamageInDirection(FVector(0.f, 1.f, 0.f), IgnoreActors, EndParticleLocation);
-	ShowParticle(EndParticleLocation);
-	DamageInDirection(FVector(0.f, -1.f, 0.f), IgnoreActors, EndParticleLocation);
-	ShowParticle(EndParticleLocation);
+	DamageInDirection(FVector(1.f, 0.f, 0.f), IgnoreActors);
+	DamageInDirection(FVector(-1.f, 0.f, 0.f), IgnoreActors);
+	DamageInDirection(FVector(0.f, 1.f, 0.f), IgnoreActors);
+	DamageInDirection(FVector(0.f, -1.f, 0.f), IgnoreActors);
 
 	ShowParticleCenter();
 	Destroy();
@@ -96,7 +91,7 @@ ABomb* ABomb::SpawnBomb(UWorld* World, FVector Location, int8 Power)
 }
 
 
-void ABomb::DamageInDirection(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf, FVector& End)
+void ABomb::DamageInDirection_Implementation(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf)
 {
 	FHitResult hit;
 	FVector endTrace = (Power * 100 * Direction) + GetActorLocation();
@@ -115,26 +110,27 @@ void ABomb::DamageInDirection(const FVector Direction, const TArray<AActor*>& ig
 		{
 			if (tempActor->DamageActor())
 			{
-				return DamageInDirection(Direction, ignoreActorsAndSelf, End);
+				return DamageInDirection(Direction, ignoreActorsAndSelf);
 			}
 		}
 		if (hit.Actor.IsValid())
 		{
 			if (FVector::Distance(hit.Location, GetActorLocation()) > 100)
 			{
-				End = hit.Location - (Direction * 50);
+				FVector End = hit.Location - (Direction * 50);
 				End.X = SetPositionOffset100(End.X);
 				End.Y = SetPositionOffset100(End.Y);
+				ShowParticle(End);
 			}
 			return;
 		}
 		else
 		{
-			End = targetLocation;
+			ShowParticle(targetLocation);
 			return;
 		}
 	}
-	End = endTrace;
+	ShowParticle(endTrace);
 	return;
 }
 

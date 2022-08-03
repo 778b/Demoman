@@ -52,7 +52,7 @@ bool ABaseBlock::DamageActor()
 void ABaseBlock::DamageActorReplicated_Implementation()
 {
 	if (BlockHealth == -1) return;
-	if (--BlockHealth == 0)
+	if (--BlockHealth <= 0)
 	{
 		DropItem();
 		Destroy();

@@ -42,9 +42,9 @@ public:
 	static ABomb* SpawnBomb(UWorld* World, FVector Location, int8 Power = 0);
 
 private:
-	//UFUNCTION(Reliable, Server)
-		void  DamageInDirection(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf, FVector& End);
-		//void  DamageInDirection_Implementation(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf, FVector& End);
+	UFUNCTION(Reliable, Server)
+		void  DamageInDirection(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf);
+		void  DamageInDirection_Implementation(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf);
 
 	UFUNCTION(Reliable, Server)
 		void BlowUp();
