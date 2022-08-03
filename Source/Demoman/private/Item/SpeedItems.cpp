@@ -8,7 +8,7 @@
 
 ASpeedItems::ASpeedItems()
 {
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/MI_BonusSpeed.MI_BonusSpeed"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/M_BonusSpeed.M_BonusSpeed"));
 	if (MeshAsset.Succeeded())
 	{
 		ItemMesh->SetMaterial(0, MeshAsset.Object);

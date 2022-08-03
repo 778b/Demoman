@@ -19,5 +19,9 @@ class DEMOMAN_API IDamageInterface
 	GENERATED_BODY()
 public:
 
-	virtual void DamageActor(bool& bIsPenetrated) = 0;
+	virtual bool DamageActor() = 0;
+
+	UFUNCTION(Reliable, NetMulticast)
+		virtual void DamageActorReplicated();
+		virtual void DamageActorReplicated_Implementation() = 0;
 };

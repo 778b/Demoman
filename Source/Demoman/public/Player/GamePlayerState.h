@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "DMPlayerState.generated.h"
+#include "GamePlayerState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DEMOMAN_API ADMPlayerState : public APlayerState
+class DEMOMAN_API AGamePlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	

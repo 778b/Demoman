@@ -34,9 +34,15 @@ void ABasePickableItems::Tick(float DeltaTime)
 	SetActorRotation(GetActorRotation() + FRotator(0.f, 1.f, 0.f));
 }
 
-void ABasePickableItems::DamageActor(bool& bIsPenetrated)
+bool ABasePickableItems::DamageActor()
 {
-	bIsPenetrated = true;
+	
+	Execute_DamageActorReplicated(this);
+	return true;
+}
+
+void ABasePickableItems::DamageActorReplicated_Implementation()
+{
 	Destroy();
 }
 

@@ -27,8 +27,8 @@ public:
 		void DropItem_Implementation();
 
 	//	IDamageInterface
-	void DamageActor(bool& bIsPenetrated) override;
-
+	bool DamageActor() override;
+	void DamageActorReplicated_Implementation() override;
 private:
 	// 0.f - 100.f
 	float ChanceToDrop = 0;					

@@ -32,7 +32,7 @@ ABomb::ABomb()
 	BombMesh->OnComponentEndOverlap.AddDynamic(this, &ABomb::OnEndOverlap);
 	BombMesh->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBeginOverlap);
 
-	ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/PS_Explode.PS_Explode"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/VFX/PS_Explode.PS_Explode"));
 	if (MeshAsset.Succeeded())
 	{
 		ExplodeParticle = ParticleAsset.Object;
@@ -45,10 +45,14 @@ void ABomb::BlowUp_Implementation()
 	if (OnBlowUpBomb.IsBound()) OnBlowUpBomb.Execute();
 	TArray<AActor*> IgnoreActors = { this };
 	FVector EndParticleLocation;
-	if (DamageInDirection(FVector(	1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
-	if (DamageInDirection(FVector(	-1.f, 0.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
-	if (DamageInDirection(FVector(	0.f, 1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
-	if (DamageInDirection(FVector(	0.f, -1.f,	0.f), IgnoreActors, EndParticleLocation)) ShowParticle(EndParticleLocation);
+	DamageInDirection(FVector(1.f, 0.f, 0.f), IgnoreActors, EndParticleLocation);
+	ShowParticle(EndParticleLocation);
+	DamageInDirection(FVector(-1.f, 0.f, 0.f), IgnoreActors, EndParticleLocation);
+	ShowParticle(EndParticleLocation);
+	DamageInDirection(FVector(0.f, 1.f, 0.f), IgnoreActors, EndParticleLocation);
+	ShowParticle(EndParticleLocation);
+	DamageInDirection(FVector(0.f, -1.f, 0.f), IgnoreActors, EndParticleLocation);
+	ShowParticle(EndParticleLocation);
 
 	ShowParticleCenter();
 	Destroy();
@@ -92,7 +96,7 @@ ABomb* ABomb::SpawnBomb(UWorld* World, FVector Location, int8 Power)
 }
 
 
-bool ABomb::DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAndSelf, FVector& End)
+void ABomb::DamageInDirection(const FVector Direction, const TArray<AActor*>& ignoreActorsAndSelf, FVector& End)
 {
 	FHitResult hit;
 	FVector endTrace = (Power * 100 * Direction) + GetActorLocation();
@@ -105,37 +109,33 @@ bool ABomb::DamageInDirection(FVector Direction, TArray<AActor*>& ignoreActorsAn
 	{
 		//DrawDebugPoint(GetWorld(), hit.Location, 25.f, FColor::Red, false, 3.5f);
 
-		bool bIsPenetrated = false;
 		FVector targetLocation = hit.Actor->GetActorLocation();
 		IDamageInterface* tempActor = Cast<IDamageInterface>(hit.Actor.Get());
 		if (tempActor)
 		{
-			tempActor->DamageActor(bIsPenetrated);
-			if (bIsPenetrated)
+			if (tempActor->DamageActor())
 			{
-				ignoreActorsAndSelf.Add(hit.Actor.Get());
 				return DamageInDirection(Direction, ignoreActorsAndSelf, End);
 			}
 		}
-		if (hit.Actor.IsValid()) // IsValid(hit.Actor.Get())
+		if (hit.Actor.IsValid())
 		{
 			if (FVector::Distance(hit.Location, GetActorLocation()) > 100)
 			{
 				End = hit.Location - (Direction * 50);
 				End.X = SetPositionOffset100(End.X);
 				End.Y = SetPositionOffset100(End.Y);
-				return true;
 			}
-			else return false;
+			return;
 		}
 		else
 		{
 			End = targetLocation;
-			return true;	// Only blocks locations
+			return;
 		}
 	}
 	End = endTrace;
-	return true;
+	return;
 }
 
 void ABomb::ShowParticle_Implementation(FVector End)

@@ -8,7 +8,7 @@
 
 APowerBombItems::APowerBombItems()
 {
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/MI_BonusPower.MI_BonusPower"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/M_BonusPower.M_BonusPower"));
 	if (MeshAsset.Succeeded())
 	{
 		ItemMesh->SetMaterial(0, MeshAsset.Object);

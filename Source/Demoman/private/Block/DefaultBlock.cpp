@@ -8,9 +8,9 @@
 ADefaultBlock::ADefaultBlock()
 {
 	BlockHealth = 1;
-	ConstructorHelpers::FObjectFinder<UMaterialInstance> MeshAsset(TEXT("/Game/Material/Block/MI_Default.MI_Default"));
-	if (MeshAsset.Succeeded())
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/Material/Block/M_Default.M_Default"));
+	if (MaterialAsset.Succeeded())
 	{
-		BlockMesh->SetMaterial(0, MeshAsset.Object);
+		BlockMesh->SetMaterial(0, MaterialAsset.Object);
 	}
 }

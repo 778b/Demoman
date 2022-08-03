@@ -4,16 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "DMHUD.generated.h"
+#include "PlayerHUD.generated.h"
 
-/**
- * 
- */
+class SPlayerGameWidget;
+
 UCLASS()
-class DEMOMAN_API ADMHUD : public AHUD
+class DEMOMAN_API APlayerHUD : public AHUD
 {
 	GENERATED_BODY()
 	
 public:
 	void DrawHUD() override;
+
+private:
 };

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "DMPlayerController.generated.h"
+#include "MenuPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DEMOMAN_API ADMPlayerController : public APlayerController
+class DEMOMAN_API AMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	

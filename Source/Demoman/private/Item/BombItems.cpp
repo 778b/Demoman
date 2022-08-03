@@ -8,7 +8,7 @@
 
 ABombItems::ABombItems()
 {
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/MI_BonusBomb.MI_BonusBomb"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Item/M_BonusBomb.M_BonusBomb"));
 	if (MeshAsset.Succeeded())
 	{
 		ItemMesh->SetMaterial(0, MeshAsset.Object);

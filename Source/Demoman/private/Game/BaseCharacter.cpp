@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Player/PlayerHUD.h"
+#include "Player/GamePlayerController.h"
 #include "Bomb.h"
 
 
@@ -31,7 +33,6 @@ ABaseCharacter::ABaseCharacter()
 	}
 	
 	GetCapsuleComponent()->SetCapsuleSize(35.f, 35.f);
-	GetCapsuleComponent()->bHiddenInGame = false;
 	PlayerModel->SetupAttachment(RootComponent);
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
@@ -47,6 +48,7 @@ void ABaseCharacter::AddBombsCount(int8 AddNum)
 	{
 		BombsCount += AddNum;
 	}
+	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
 
 void ABaseCharacter::AddBombsPlaced(int8 AddNum)
@@ -55,9 +57,23 @@ void ABaseCharacter::AddBombsPlaced(int8 AddNum)
 	BombsPlaced += AddNum;
 }
 
+void ABaseCharacter::UpdateGameWidget_Implementation(int8 bombs, int8 power, float speed)
+{
+	auto tempController = Cast<AGamePlayerController>(GetController());
+	if (tempController)
+	{
+		tempController->UpdateGameWidget(bombs,power,speed);
+	}
+}
+
 void ABaseCharacter::Death_Implementation()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Skin/MI_DeadedPlayer.MI_DeadedPlayer"));
+	if (MeshAsset.Succeeded())
+	{
+		PlayerModel->SetMaterial(0, MeshAsset.Object);
+	}
 	DisableInput(Cast<APlayerController>(GetController()));
 }
 
@@ -67,6 +83,7 @@ void ABaseCharacter::AddBombsPower(int8 AddNum)
 	{
 		BombsPower += AddNum;
 	}
+	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
 
 void ABaseCharacter::AddMovementSpeed(float AddNum)
@@ -76,13 +93,14 @@ void ABaseCharacter::AddMovementSpeed(float AddNum)
 		MovementSpeed += AddNum;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 	}
+	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
 
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
 
 void ABaseCharacter::SpawnBomb_Implementation()
@@ -104,8 +122,14 @@ void ABaseCharacter::RestoreBomb()
 	AddBombsPlaced(-1);
 }
 
-void ABaseCharacter::DamageActor(bool& bIsPenetrated)
+bool ABaseCharacter::DamageActor()
 {
-	bIsPenetrated = true;
+	
+	Execute_DamageActorReplicated(this);
+	return true;
+}
+
+void ABaseCharacter::DamageActorReplicated_Implementation()
+{
 	Death();
 }

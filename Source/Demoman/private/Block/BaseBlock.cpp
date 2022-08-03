@@ -43,16 +43,21 @@ void ABaseBlock::DropItem_Implementation()
 	}
 }
 
-void ABaseBlock::DamageActor(bool& bIsPenetrated)
+bool ABaseBlock::DamageActor()
 {
-	bIsPenetrated = false;
+	Execute_DamageActorReplicated(this);
+	return false;
+}
+
+void ABaseBlock::DamageActorReplicated_Implementation()
+{
 	if (BlockHealth == -1) return;
 	if (--BlockHealth == 0)
 	{
 		DropItem();
 		Destroy();
 	}
-	else 
+	else
 	{
 		// Visual damage block;
 		//BlockMesh->GetMaterial(0);

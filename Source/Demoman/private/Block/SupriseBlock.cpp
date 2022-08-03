@@ -8,10 +8,10 @@
 ASupriseBlock::ASupriseBlock()
 {
 	BlockHealth = 1;
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Block/MI_Surprise.MI_Surprise"));
-	if (MeshAsset.Succeeded())
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/Material/Block/M_Surprise.M_Surprise"));
+	if (MaterialAsset.Succeeded())
 	{
-		BlockMesh->SetMaterial(0, MeshAsset.Object);
+		BlockMesh->SetMaterial(0, MaterialAsset.Object);
 	}
 	SetChanceToDrop(85.f);
 }

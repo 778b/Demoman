@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "DMMainMenuGameMode.generated.h"
+#include "DemomanMenuGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DEMOMAN_API ADMMainMenuGameMode : public AGameModeBase
+class DEMOMAN_API ADemomanMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 public:
-	ADMMainMenuGameMode();
+	ADemomanMenuGameMode();
 };

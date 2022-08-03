@@ -18,9 +18,10 @@ public:
 	UFUNCTION(Reliable, Server)
 		void SpawnBomb();
 		virtual void SpawnBomb_Implementation();
-	UFUNCTION(Reliable, Server)
+
+	UFUNCTION(Reliable, NetMulticast)
 		void Death();
-	virtual void Death_Implementation();
+		virtual void Death_Implementation();
 
 	int8 GetPlacedBombs()		{ return BombsPlaced;	}
 	int8 GetCountBombs()		{ return BombsCount;	}
@@ -33,6 +34,9 @@ public:
 private:
 	void AddBombsPlaced(int8 AddNum);
 
+	UFUNCTION(Reliable, Client)
+	void UpdateGameWidget(int8 bombs, int8 power, float speed);
+	void UpdateGameWidget_Implementation(int8 bombs, int8 power, float speed);
 
 public:
 	UPROPERTY()
@@ -59,5 +63,6 @@ protected:
 
 public:
 	//	IDamageInterface
-	void DamageActor(bool& bIsPenetrated) override;
+	bool DamageActor() override;
+	void DamageActorReplicated_Implementation() override;
 };

@@ -21,7 +21,8 @@ public:
 	void Tick(float DeltaTime) override;
 
 	//	IDamageInterface
-	void DamageActor(bool& bIsPenetrated) override;
+	bool DamageActor() override;
+	void DamageActorReplicated_Implementation() override;
 
 public:
 	class UStaticMeshComponent* ItemMesh;

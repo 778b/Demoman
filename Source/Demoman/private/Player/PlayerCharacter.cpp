@@ -10,6 +10,11 @@ APlayerCharacter::APlayerCharacter()
 
 }
 
+void APlayerCharacter::SetTeamMaterial(UMaterialInterface* newMaterial)
+{
+	PlayerModel->SetMaterial(0, newMaterial);
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);

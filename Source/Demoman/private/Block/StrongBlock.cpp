@@ -8,10 +8,10 @@
 AStrongBlock::AStrongBlock()
 {
 	BlockHealth = 6;
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Block/MI_Strong.MI_Strong"));
-	if (MeshAsset.Succeeded())
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/Material/Block/M_Strong.M_Strong"));
+	if (MaterialAsset.Succeeded())
 	{
-		BlockMesh->SetMaterial(0, MeshAsset.Object);
+		BlockMesh->SetMaterial(0, MaterialAsset.Object);
 	}
 	SetChanceToDrop(15.f);
 }

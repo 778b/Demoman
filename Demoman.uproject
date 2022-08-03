@@ -12,7 +12,8 @@
 				"Engine",
 				"UnrealEd",
 				"Slate",
-				"SlateCore"
+				"SlateCore",
+				"UMG"
 			]
 		}
 	]

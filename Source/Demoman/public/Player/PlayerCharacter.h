@@ -14,9 +14,7 @@ class DEMOMAN_API APlayerCharacter : public ABaseCharacter
 public:
 	APlayerCharacter();
 
-public:
-
-
+	void SetTeamMaterial(UMaterialInterface* newMaterial);
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
