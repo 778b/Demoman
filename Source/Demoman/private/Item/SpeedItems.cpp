@@ -18,6 +18,6 @@ ASpeedItems::ASpeedItems()
 
 void ASpeedItems::Consume(ABaseCharacter* InstigatorChar)
 {
-	InstigatorChar->AddMovementSpeed(100.f);
+	InstigatorChar->AddMovementSpeed(50.f);
 	Destroy();
 }

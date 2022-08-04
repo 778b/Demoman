@@ -47,7 +47,7 @@ public:
 
 	const int8 MaxBombsCount = 5;
 	const int8 MaxBombsPower = 5;
-	const float MaxMovementSpeed = 700;
+	const float MaxMovementSpeed = 600;
 
 private:
 	int8 BombsPlaced = 0;
@@ -55,6 +55,7 @@ private:
 	int8 BombsPower = 2;
 	float MovementSpeed = 400;
 
+	UMaterialInterface* DeadPlayerMaterial;
 protected:
 	virtual void BeginPlay() override;
 

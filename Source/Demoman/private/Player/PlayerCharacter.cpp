@@ -21,7 +21,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("DoBomb", EInputEvent::IE_Pressed, this, &ABaseCharacter::SpawnBomb);
-	// spawn blocks (1,2,3)
 }
 
 void APlayerCharacter::MoveForward(float Value)

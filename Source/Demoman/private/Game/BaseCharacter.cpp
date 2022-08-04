@@ -33,6 +33,7 @@ ABaseCharacter::ABaseCharacter()
 	}
 	
 	GetCapsuleComponent()->SetCapsuleSize(35.f, 35.f);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	PlayerModel->SetupAttachment(RootComponent);
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
 	PlayerCamera->SetupAttachment(RootComponent);
@@ -40,6 +41,12 @@ ABaseCharacter::ABaseCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 	GetCharacterMovement()->MaxAcceleration = 2000;
+
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/Material/Skin/M_DeadedPlayer.M_DeadedPlayer"));
+	if (MaterialAsset.Succeeded())
+	{
+		DeadPlayerMaterial = MaterialAsset.Object;
+	}
 }
 
 void ABaseCharacter::AddBombsCount(int8 AddNum)
@@ -68,12 +75,15 @@ void ABaseCharacter::UpdateGameWidget_Implementation(int8 bombs, int8 power, flo
 
 void ABaseCharacter::Death_Implementation()
 {
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshAsset(TEXT("/Game/Material/Skin/MI_DeadedPlayer.MI_DeadedPlayer"));
-	if (MeshAsset.Succeeded())
-	{
-		PlayerModel->SetMaterial(0, MeshAsset.Object);
-	}
+	FCollisionResponseContainer ECCContrainer;
+	ECCContrainer.SetResponse(ECC_Pawn, ECR_Ignore);
+	ECCContrainer.SetResponse(ECC_Visibility, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannels(ECCContrainer);
+
+	SetActorScale3D(FVector(1.05f));
+
+	PlayerModel->SetMaterial(0, DeadPlayerMaterial);
+
 	DisableInput(Cast<APlayerController>(GetController()));
 }
 
@@ -124,7 +134,6 @@ void ABaseCharacter::RestoreBomb()
 
 bool ABaseCharacter::DamageActor()
 {
-	
 	Execute_DamageActorReplicated(this);
 	return true;
 }

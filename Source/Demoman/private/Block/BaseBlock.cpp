@@ -45,14 +45,17 @@ void ABaseBlock::DropItem_Implementation()
 
 bool ABaseBlock::DamageActor()
 {
-	Execute_DamageActorReplicated(this);
+	if (BlockHealth != -1)
+	{
+		--BlockHealth;
+		Execute_DamageActorReplicated(this);
+	}
 	return false;
 }
 
 void ABaseBlock::DamageActorReplicated_Implementation()
 {
-	if (BlockHealth == -1) return;
-	if (--BlockHealth <= 0)
+	if (BlockHealth <= 0)
 	{
 		DropItem();
 		Destroy();
