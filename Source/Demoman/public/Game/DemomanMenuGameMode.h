@@ -6,9 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "DemomanMenuGameMode.generated.h"
 
-/**
- * 
- */
+
+class UUserWidget;
+
 UCLASS()
 class DEMOMAN_API ADemomanMenuGameMode : public AGameModeBase
 {
@@ -16,4 +16,9 @@ class DEMOMAN_API ADemomanMenuGameMode : public AGameModeBase
 	
 public:
 	ADemomanMenuGameMode();
+
+	void BeginPlay() override;
+
+protected:
+	TSubclassOf<UUserWidget> MenuWidgetClass;
 };

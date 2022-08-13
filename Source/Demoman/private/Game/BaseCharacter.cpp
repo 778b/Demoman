@@ -8,7 +8,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "GameFramework/FloatingPawnMovement.h"
 #include "Player/PlayerHUD.h"
 #include "Player/GamePlayerController.h"
 #include "Bomb.h"

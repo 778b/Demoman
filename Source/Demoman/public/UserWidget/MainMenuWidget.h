@@ -17,4 +17,6 @@ class DEMOMAN_API UMainMenuWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable)
 		void StartGame();
+	// Widget switcher
+	
 };

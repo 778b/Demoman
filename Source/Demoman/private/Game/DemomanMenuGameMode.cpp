@@ -3,11 +3,30 @@
 
 #include "Game/DemomanMenuGameMode.h"
 
-#include "Player/PlayerHUD.h"
-#include "Player/MenuPlayerController.h"
+#include "Blueprint/UserWidget.h"
+#include "GameFramework/GameStateBase.h"
+#include "UObject/ConstructorHelpers.h"
+#include "GameFramework/PlayerState.h"
+
 
 ADemomanMenuGameMode::ADemomanMenuGameMode()
 {
-	PlayerControllerClass = AMenuPlayerController::StaticClass();
-	HUDClass = APlayerHUD::StaticClass();
+	DefaultPawnClass = nullptr;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/Widgets/WD_MainMenu"));
+	if (WidgetClass.Succeeded())
+	{
+		MenuWidgetClass = WidgetClass.Class;
+	}
+}
+
+void ADemomanMenuGameMode::BeginPlay()
+{
+	APlayerController* TempController = Cast<APlayerController>(GameState->PlayerArray[0]->GetOwner());
+	check(TempController);
+
+	UUserWidget* TempWidget = CreateWidget<UUserWidget>(TempController, MenuWidgetClass);
+	check(TempWidget);
+	;
+	TempWidget->AddToViewport(-1);
 }
