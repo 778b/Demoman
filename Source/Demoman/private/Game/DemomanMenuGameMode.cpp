@@ -27,6 +27,9 @@ void ADemomanMenuGameMode::BeginPlay()
 
 	UUserWidget* TempWidget = CreateWidget<UUserWidget>(TempController, MenuWidgetClass);
 	check(TempWidget);
-	;
+	
 	TempWidget->AddToViewport(-1);
+	
+	TempController->SetInputMode(FInputModeUIOnly());
+	TempController->SetShowMouseCursor(true);
 }

@@ -22,7 +22,7 @@ ABaseCharacter::ABaseCharacter()
 	bUseControllerRotationYaw = false;
 	JumpMaxCount = 0;
 	bReplicates = true;
-	 
+
 
 	PlayerModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GameModel"));
 	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Models/Cube.Cube"));
