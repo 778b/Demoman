@@ -7,6 +7,8 @@
 #include "GamePlayerController.generated.h"
 
 class UGameUserWidget;
+class USessionUserWidget;
+class UFindedSessionWidget;
 
 UCLASS()
 class DEMOMAN_API AGamePlayerController : public APlayerController
@@ -18,7 +20,15 @@ public:
 
 	void UpdateGameWidget(int8 bombs, int8 power, float speed);
 
+	UClass* GetFindedSessionClass();
+	UClass* GetSessionWidgetClass();
+
 public:
 	UGameUserWidget* GameWidget;
-	TSubclassOf<UUserWidget> GameWidgetClass;
+	USessionUserWidget* SessionWidget;
+
+protected:
+	TSubclassOf<USessionUserWidget> GameLobbyWidgetClass;
+	TSubclassOf<UFindedSessionWidget> FindedLobbyWidgetClass;
+	TSubclassOf<UGameUserWidget> GameWidgetClass;
 };

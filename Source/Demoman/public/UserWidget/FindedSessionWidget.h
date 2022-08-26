@@ -9,7 +9,7 @@
 #include "FindedSessionWidget.generated.h"
 
 
-
+class UTextBlock;
 
 UCLASS()
 class DEMOMAN_API UFindedSessionWidget : public UUserWidget
@@ -20,11 +20,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void TryJoinSession();
 
+	void SetupWidgetSettings();
+
+	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);\
+
 public:
-	int32 CurrentPlayers;
-	// todo
-	// servername
-	// max players
-	// ping
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* ServerName;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* CurrentPlayers;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* Ping;
+
 	FOnlineSessionSearchResult SessionResult;
+
+	FOnJoinSessionCompleteDelegate JoinSessionDelegate;
 };

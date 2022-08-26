@@ -34,16 +34,15 @@ protected:
 	void OnCompleteSessionFinding(bool bIsSuccess);
 
 protected:
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* CreateSessionButton;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* UpdateSessionsButton;
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UScrollBox* FindedSessionScrollBox;
 
 protected:
-	TSubclassOf<UUserWidget> GameLobbyWidgetClass;
-	TSubclassOf<UFindedSessionWidget> FindedLobbyWidgetClass;
+
 	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
 
 public:
