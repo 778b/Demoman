@@ -7,8 +7,6 @@
 #include "DemomanGameModeBase.generated.h"
 
 
-class UUserWidget;
-
 
 UCLASS()
 class DEMOMAN_API ADemomanGameModeBase : public AGameModeBase
@@ -18,8 +16,4 @@ class DEMOMAN_API ADemomanGameModeBase : public AGameModeBase
 public:
 	ADemomanGameModeBase();
 
-	void BeginPlay() override;
-
-protected:
-	TSubclassOf<UUserWidget> MenuWidgetClass;
 };

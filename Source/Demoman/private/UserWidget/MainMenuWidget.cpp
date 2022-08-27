@@ -4,7 +4,7 @@
 #include "UserWidget/MainMenuWidget.h"
 
 #include "UObject/ConstructorHelpers.h"
-#include "Player/GamePlayerController.h"
+#include "Player/MenuPlayerController.h"
 #include "UserWidget/FindedSessionWidget.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
@@ -18,7 +18,7 @@ UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& obj)
 
 }
 
-void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName)
+void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
 {
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetOwningPlayer()->GetWorld());
 	if (!SessionPtr.IsValid())
@@ -26,6 +26,8 @@ void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, 
 		OnCompleteCreationSession.Execute(false);
 		return;
 	}
+	SelectedGameLevel = LevelName;
+
 	FOnlineSessionSettings CurrentSessionSettings = FOnlineSessionSettings();
 	
 	CurrentSessionSettings.NumPublicConnections = NumPublicConnections;
@@ -36,10 +38,12 @@ void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, 
 	CurrentSessionSettings.bUsesPresence = true;
 	CurrentSessionSettings.bShouldAdvertise = true;
 
-	CurrentSessionSettings.Set(SETTING_MAPNAME, FString("DemomanServerTextName"), EOnlineDataAdvertisementType::ViaOnlineService);
+	CurrentSessionSettings.Set(SETTING_MAPNAME, SessionName, EOnlineDataAdvertisementType::ViaOnlineService);
 
-	SessionPtr->AddOnCreateSessionCompleteDelegate_Handle(FOnCreateSessionCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteSessionCreate));
-	SessionPtr->CreateSession(GetOwningPlayer()->NetPlayerIndex, FName(SessionName), CurrentSessionSettings);
+	SessionPtr->AddOnCreateSessionCompleteDelegate_Handle(
+		FOnCreateSessionCompleteDelegate::CreateUObject(
+			this, &UMainMenuWidget::OnCompleteSessionCreate));
+	SessionPtr->CreateSession(GetOwningPlayer()->NetPlayerIndex, FName(TEXT("Default SessionName")), CurrentSessionSettings);
 
 	CreateSessionButton->SetIsEnabled(false);
 }
@@ -51,18 +55,16 @@ void UMainMenuWidget::FindGameSessions(int32 PlayerCount, int32 MaxSearchResult)
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetOwningPlayer()->GetWorld());
 	if (!SessionPtr.IsValid()) return;
 
-	SessionPtr->AddOnFindSessionsCompleteDelegate_Handle(FOnFindSessionsCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteSessionFinding));
-
+	SessionPtr->AddOnFindSessionsCompleteDelegate_Handle(
+		FOnFindSessionsCompleteDelegate::CreateUObject(
+			this, &UMainMenuWidget::OnCompleteSessionFinding));
 	//SessionPtr->AddOnCancelFindSessionsCompleteDelegate_Handle(FOnCancelFindSessionsCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteSessionFinding));
 
 	LastSearchSettings->MaxSearchResults = MaxSearchResult;
 	LastSearchSettings->TimeoutInSeconds = 1000;
 
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	if (SessionPtr->FindSessions(*localPlayer->GetPreferredUniqueNetId(), LastSearchSettings))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, "Some Session was find");
-	}
+	SessionPtr->FindSessions(*localPlayer->GetPreferredUniqueNetId(), LastSearchSettings);
 }
 
 void UMainMenuWidget::OnCompleteSessionCreate(FName SessionName, bool result)
@@ -70,11 +72,14 @@ void UMainMenuWidget::OnCompleteSessionCreate(FName SessionName, bool result)
 	CreateSessionButton->SetIsEnabled(true);
 	if (!result) return;
 
-	AGamePlayerController* TempController = GetOwningPlayer<AGamePlayerController>();
-	checkf(TempController, TEXT("MainMenu was miss PlayerController!"));
+	AMenuPlayerController* TempController = GetOwningPlayer<AMenuPlayerController>();
+	checkf(TempController, TEXT("MainMenu missed PlayerController!"));
 
 	TempController->SessionWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());
+	checkf(TempController->SessionWidget, TEXT("MainMenu cant create SessionWidget!"));
+
 	RemoveFromViewport();
+	TempController->SessionWidget->GameLevelName = SelectedGameLevel;
 	TempController->SessionWidget->AddToPlayerScreen(1);
 }
 
@@ -86,7 +91,7 @@ void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)
 	UpdateSessionsButton->SetIsEnabled(true);
 	FindedSessionScrollBox->ClearChildren();
 
-	AGamePlayerController* TempController = GetOwningPlayer<AGamePlayerController>();
+	AMenuPlayerController* TempController = GetOwningPlayer<AMenuPlayerController>();
 	checkf(TempController, TEXT("MainMenu Missed Player Controller"));
 
 	for (FOnlineSessionSearchResult& Session : LastSearchSettings.Get().SearchResults)

@@ -2,6 +2,8 @@
 
 #include "UserWidget/SessionUserWidget.h"
 
+#include "Kismet/GameplayStatics.h"
+
 void USessionUserWidget::OnJoinSession(APlayerController* JoinedPlayer)
 {
 }
@@ -24,5 +26,5 @@ void USessionUserWidget::OnSelectNewMap()
 
 void USessionUserWidget::OnStartGame()
 {
-	
+	//UGameplayStatics::OpenLevel()
 }

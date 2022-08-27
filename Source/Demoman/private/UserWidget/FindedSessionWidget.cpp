@@ -4,7 +4,7 @@
 #include "UserWidget/FindedSessionWidget.h"
 
 #include "Components/TextBlock.h"
-#include "Player/GamePlayerController.h"
+#include "Player/MenuPlayerController.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "UserWidget/SessionUserWidget.h"
 
@@ -48,7 +48,7 @@ void UFindedSessionWidget::OnJoinSessionCompleted(FName SessionName, EOnJoinSess
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, "Join session is complete!");
 	if (Result != EOnJoinSessionCompleteResult::Type::Success) return;
 
-	AGamePlayerController* TempController = GetOwningPlayer<AGamePlayerController>();
+	AMenuPlayerController* TempController = GetOwningPlayer<AMenuPlayerController>();
 	checkf(TempController, TEXT("FindedSessionWidget missed PlayerController!"));
 	
 	TempController->SessionWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());

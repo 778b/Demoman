@@ -24,14 +24,20 @@ public:
 	UMainMenuWidget(const FObjectInitializer& obj);
 
 	UFUNCTION(BlueprintCallable)
-		void CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName);
+		void CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName);
 
 	UFUNCTION(BlueprintCallable)
 		void FindGameSessions(int32 PlayerCount, int32 MaxSearchResult);
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void StartLoadingScreen();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void StopLoadingScreen();
+
 protected:
-	void OnCompleteSessionCreate(FName SessionName, bool result);
-	void OnCompleteSessionFinding(bool bIsSuccess);
+	virtual void OnCompleteSessionCreate(FName SessionName, bool result);
+	virtual void OnCompleteSessionFinding(bool bIsSuccess);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -42,8 +48,10 @@ protected:
 		UScrollBox* FindedSessionScrollBox;
 
 protected:
-
 	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
+
+private:
+	FName SelectedGameLevel;
 
 public:
 	FOnCompleteCreationSession OnCompleteCreationSession;

@@ -15,10 +15,10 @@ struct FPlayerLobbyState
 
 public:
 	UPROPERTY(BlueprintReadOnly)
-		APlayerController* Player;
+		APlayerController* Player = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
-		FColor PlayerColor;
+		FColor PlayerColor = FColor::White;
 };
 
 
@@ -44,4 +44,5 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		TArray<FPlayerLobbyState> DecidedPlayers;
 
+	FName GameLevelName;
 };

@@ -17,7 +17,7 @@ class DEMOMAN_API ADemomanMenuGameMode : public AGameModeBase
 public:
 	ADemomanMenuGameMode();
 
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 protected:
 	TSubclassOf<UUserWidget> MenuWidgetClass;

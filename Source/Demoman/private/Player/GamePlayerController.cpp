@@ -5,8 +5,6 @@
 
 #include "UObject/ConstructorHelpers.h"
 #include "UserWidget/GameUserWidget.h"
-#include "UserWidget/FindedSessionWidget.h"
-#include "UserWidget/SessionUserWidget.h"
 #include "GameFramework/HUD.h"
 
 AGamePlayerController::AGamePlayerController()
@@ -15,18 +13,6 @@ AGamePlayerController::AGamePlayerController()
 	if (WidgetClass.Succeeded())
 	{
 		GameWidgetClass = WidgetClass.Class;
-	}
-
-	ConstructorHelpers::FClassFinder<USessionUserWidget> gameLobbyWidgetClass(TEXT("/Game/Widgets/WD_GameLobby"));
-	if (gameLobbyWidgetClass.Succeeded())
-	{
-		GameLobbyWidgetClass = gameLobbyWidgetClass.Class;
-	}
-
-	ConstructorHelpers::FClassFinder<UFindedSessionWidget> findedLobbyWidgetClass(TEXT("/Game/Widgets/WD_FindedSession"));
-	if (findedLobbyWidgetClass.Succeeded())
-	{
-		FindedLobbyWidgetClass = findedLobbyWidgetClass.Class;
 	}
 }
 
@@ -38,14 +24,4 @@ void AGamePlayerController::UpdateGameWidget(int8 bombs, int8 power, float speed
 		GameWidget->AddToPlayerScreen(-1);
 	}
 	if (GameWidget) GameWidget->UpdateWidget(bombs, power, speed);
-}
-
-UClass* AGamePlayerController::GetFindedSessionClass()
-{
-	return FindedLobbyWidgetClass;
-}
-
-UClass* AGamePlayerController::GetSessionWidgetClass()
-{
-	return GameLobbyWidgetClass;
 }
