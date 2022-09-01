@@ -8,15 +8,12 @@
 #include "MainMenuWidget.generated.h"
 
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnCompleteCreationSession, bool, bIsSuccess);
-
-
 class UButton;
 class UScrollBox;
 class UFindedSessionWidget;
 
 UCLASS()
-class DEMOMAN_API UMainMenuWidget : public UUserWidget
+class DEMOMAN_API UMainMenuWidget final : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -35,13 +32,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void StopLoadingScreen();
 
-protected:
-	virtual void OnCompleteSessionCreate(FName SessionName, bool result);
-	virtual void OnCompleteSessionFinding(bool bIsSuccess);
-
-	//virtual void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
-protected:
+public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* CreateSessionButton;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -49,13 +40,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UScrollBox* FindedSessionScrollBox;
 
-protected:
-	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
-
 private:
 	FName SelectedGameLevel;
 
-public:
-	FOnCompleteCreationSession OnCompleteCreationSession;
-	
+	FOnlineSessionSearch LastSearchSettings;
+
+	virtual void OnCompleteSessionCreate(FName SessionName, bool result);
+	virtual void OnCompleteSessionFinding(bool bIsSuccess);
 };

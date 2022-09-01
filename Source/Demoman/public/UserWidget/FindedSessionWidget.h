@@ -12,7 +12,7 @@
 class UTextBlock;
 
 UCLASS()
-class DEMOMAN_API UFindedSessionWidget : public UUserWidget
+class DEMOMAN_API UFindedSessionWidget final : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -21,8 +21,6 @@ public:
 		void TryJoinSession();
 
 	void SetupWidgetSettings();
-
-	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))

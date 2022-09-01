@@ -9,6 +9,7 @@
 
 void USessionUserWidget::NativeConstruct()
 {
+	// Debug todo delete
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetOwningPlayer()->GetWorld());
 	checkf(SessionPtr.IsValid(), TEXT("Session is not valid!"));
 
