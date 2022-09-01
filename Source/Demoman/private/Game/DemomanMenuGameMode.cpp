@@ -19,26 +19,10 @@ ADemomanMenuGameMode::ADemomanMenuGameMode()
 
 	checkf(PlayerControllerClass && HUDClass, TEXT("MenuGamemode cant create static class!"));
 
-	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/Widgets/WD_MainMenu"));
-	if (WidgetClass.Succeeded())
-	{
-		MenuWidgetClass = WidgetClass.Class;
-	}
+
 }
 
 void ADemomanMenuGameMode::BeginPlay()
 {
-	/* In simulate we can use default PlayerController ONLY
-	 * Because EpicGames are genius :)
-	*/ 
-	APlayerController* TempController = GameState->PlayerArray[0]->GetOwner<APlayerController>();
-	checkf(TempController, TEXT("MenuGameMode missed PlayerController!"));
 
-	UUserWidget* TempWidget = CreateWidget<UUserWidget>(TempController, MenuWidgetClass);
-	checkf(TempWidget, TEXT("MenuGameMode cant create widget menu!"));
-	
-	TempWidget->AddToViewport(-1);
-	
-	TempController->SetInputMode(FInputModeUIOnly());
-	TempController->SetShowMouseCursor(true);
 }

@@ -22,17 +22,21 @@ public:
 
 	void SetupWidgetSettings();
 
-	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);\
+	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* ServerName;
+		UTextBlock* ServerNameBlock;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* CurrentPlayers;
+		UTextBlock* MapNameBlock;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* Ping;
+		UTextBlock* CurrentPlayersBlock;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* PingBlock;
 
+	FName PublicSessionName;
 	FOnlineSessionSearchResult SessionResult;
 
-	FOnJoinSessionCompleteDelegate JoinSessionDelegate;
+private:
+	FString RoomName;
 };

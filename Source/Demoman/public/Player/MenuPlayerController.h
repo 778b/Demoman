@@ -7,6 +7,7 @@
 #include "MenuPlayerController.generated.h"
 
 class UGameUserWidget;
+class UMainMenuWidget;
 class USessionUserWidget;
 class UFindedSessionWidget;
 
@@ -19,15 +20,19 @@ class DEMOMAN_API AMenuPlayerController : public APlayerController
 public:
 	AMenuPlayerController();
 
-	UClass* GetFindedSessionClass();
-	UClass* GetSessionWidgetClass();
+	void BeginPlay() override;
+
+	TSubclassOf<UUserWidget> GetFindedSessionClass();
+	TSubclassOf<UUserWidget> GetSessionWidgetClass();
 
 public:
+	//todo weak pointer
 	USessionUserWidget* SessionWidget;
 
 protected:
 	TSubclassOf<USessionUserWidget> GameLobbyWidgetClass;
 	TSubclassOf<UFindedSessionWidget> FindedLobbyWidgetClass;
 	TSubclassOf<UGameUserWidget> GameWidgetClass;
+	TSubclassOf<UMainMenuWidget> MenuWidgetClass;
 
 };

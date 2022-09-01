@@ -19,6 +19,4 @@ public:
 
 	virtual void BeginPlay() override;
 
-protected:
-	TSubclassOf<UUserWidget> MenuWidgetClass;
 };

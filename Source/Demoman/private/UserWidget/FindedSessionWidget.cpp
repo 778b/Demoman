@@ -16,41 +16,55 @@ void UFindedSessionWidget::TryJoinSession()
 	{
 		return;
 	}
-	//SessionPtr->AddOnJoinSessionCompleteDelegate_Handle(FOnJoinSessionCompleteDelegate::CreateUObject(this, &UFindedSessionWidget::OnJoinSessionCompleted));
-	TSharedRef<UUserWidget> tempShared = MakeShareable(this);
+	SessionPtr->AddOnJoinSessionCompleteDelegate_Handle(FOnJoinSessionCompleteDelegate::CreateUObject(this, &UFindedSessionWidget::OnJoinSessionCompleted));
 
-	JoinSessionDelegate.BindUObject(this, &UFindedSessionWidget::OnJoinSessionCompleted);
-
-	SessionPtr->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionDelegate);
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 
-	SessionPtr->JoinSession(*localPlayer->GetPreferredUniqueNetId(), FName(), SessionResult);
-
+	SessionPtr->JoinSession(*localPlayer->GetPreferredUniqueNetId(), FName("SessionName"), SessionResult);
 }
 
 
 void UFindedSessionWidget::SetupWidgetSettings()
 {
-	FString RoomName;
-	checkf(SessionResult.Session.SessionSettings.Get(SETTING_MAPNAME, RoomName), TEXT("FindedSession had wrong session FName!"));
+	FString MapName;
+	checkf(SessionResult.Session.SessionSettings.Get(SETTING_GAMEMODE, RoomName), TEXT("FindedSession had wrong session FName!"));
+	checkf(SessionResult.Session.SessionSettings.Get(SETTING_MAPNAME, MapName), TEXT("FindedSession had wrong map FName!"));
 
 	FText Players = FText::FromString(FString::FromInt(SessionResult.Session.NumOpenPrivateConnections) + "/"	
 										+ FString::FromInt(SessionResult.Session.NumOpenPublicConnections));
 
-	Ping->SetText(FText::AsNumber(SessionResult.PingInMs));
-	CurrentPlayers->SetText(Players);
-	ServerName->SetText(FText::FromString(RoomName));
-
+	PingBlock->SetText(FText::AsNumber(SessionResult.PingInMs));
+	CurrentPlayersBlock->SetText(Players);
+	ServerNameBlock->SetText(FText::FromString(RoomName));
+	MapNameBlock->SetText(FText::FromString(MapName));
 }
 
 void UFindedSessionWidget::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, "Join session is complete!");
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::FromInt(Result));
 	if (Result != EOnJoinSessionCompleteResult::Type::Success) return;
 
 	AMenuPlayerController* TempController = GetOwningPlayer<AMenuPlayerController>();
 	checkf(TempController, TEXT("FindedSessionWidget missed PlayerController!"));
-	
-	TempController->SessionWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());
-	TempController->SessionWidget->AddToPlayerScreen(1);
+
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetOwningPlayer()->GetWorld());
+	checkf(SessionPtr.IsValid(), TEXT("FindedSessionWidget missed SessionPtr"));
+
+	FString ConnectionInfo;
+	SessionPtr.Get()->GetResolvedConnectString(SessionName, ConnectionInfo);
+	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, ConnectionInfo);
+
+	APlayerController* TempPlayerController = GetWorld()->GetFirstPlayerController();
+	checkf(TempPlayerController, TEXT("FindedSessionWidget missed PlayerController"))
+
+	TempPlayerController->ClientTravel(ConnectionInfo, ETravelType::TRAVEL_Absolute);
+	//checkf(GetGameInstance()->ClientTravelToSession(TempController->NetPlayerIndex, SessionName), TEXT("CantTravel To session"));
+
+	/*USessionUserWidget* TempWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());
+	checkf(TempWidget, TEXT("FindedSessionWidget cant create session widget!"));
+
+	TempController->SessionWidget = TempWidget;
+	TempController->SessionWidget->GameLevelBlock->SetText(MapNameBlock->GetText());
+	TempController->SessionWidget->SessionBlock->SetText(ServerNameBlock->GetText());
+	TempController->SessionWidget->AddToPlayerScreen(1);*/
 }

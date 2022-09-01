@@ -3,6 +3,7 @@
 #include "Player/MenuPlayerController.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "UserWidget/MainMenuWidget.h"
 #include "UserWidget/FindedSessionWidget.h"
 #include "UserWidget/SessionUserWidget.h"
 
@@ -20,14 +21,34 @@ AMenuPlayerController::AMenuPlayerController()
 	{
 		FindedLobbyWidgetClass = findedLobbyWidgetClass.Class;
 	}
+
+	ConstructorHelpers::FClassFinder<UMainMenuWidget> menuWidgetClass(TEXT("/Game/Widgets/WD_MainMenu"));
+	if (menuWidgetClass.Succeeded())
+	{
+		MenuWidgetClass = menuWidgetClass.Class;
+	}
 }
 
-UClass* AMenuPlayerController::GetFindedSessionClass()
+void AMenuPlayerController::BeginPlay()
+{
+	if (IsLocalController())
+	{
+		UMainMenuWidget* TempWidget = CreateWidget<UMainMenuWidget>(this, MenuWidgetClass);
+		checkf(TempWidget, TEXT("MenuGameMode cant create widget menu!"));
+
+		TempWidget->AddToViewport(-1);
+
+		SetInputMode(FInputModeUIOnly());
+		SetShowMouseCursor(true);
+	}
+}
+
+TSubclassOf<UUserWidget> AMenuPlayerController::GetFindedSessionClass()
 {
 	return FindedLobbyWidgetClass;
 }
 
-UClass* AMenuPlayerController::GetSessionWidgetClass()
+TSubclassOf<UUserWidget> AMenuPlayerController::GetSessionWidgetClass()
 {
 	return GameLobbyWidgetClass;
 }

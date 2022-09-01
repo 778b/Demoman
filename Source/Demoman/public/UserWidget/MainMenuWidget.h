@@ -39,6 +39,8 @@ protected:
 	virtual void OnCompleteSessionCreate(FName SessionName, bool result);
 	virtual void OnCompleteSessionFinding(bool bIsSuccess);
 
+	//virtual void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* CreateSessionButton;

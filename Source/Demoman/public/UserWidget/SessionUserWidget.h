@@ -8,6 +8,9 @@
 #include "SessionUserWidget.generated.h"
 
 
+class UTextBlock;
+class UButton;
+
 USTRUCT(BlueprintType)
 struct FPlayerLobbyState
 {
@@ -28,6 +31,8 @@ class DEMOMAN_API USessionUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	void NativeConstruct() override;
+
 	void OnJoinSession(APlayerController* JoinedPlayer);
 	void OnLeaveSession(APlayerController* LeavedPlayer);
 
@@ -37,6 +42,12 @@ public:
 	void OnSelectNewMap();
 	void OnStartGame();
 
+	UFUNCTION(BlueprintCallable)
+		void DrawDebugPlayers();
+
+protected:
+	virtual void OnRegisterPlayersCompleted(FName ServerName, const TArray< FUniqueNetIdRef >& Players, bool Success);
+
 public:
 	UPROPERTY(BlueprintReadOnly)
 		TArray<APlayerController*> UndecidedPlayers;
@@ -44,5 +55,34 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		TArray<FPlayerLobbyState> DecidedPlayers;
 
-	FName GameLevelName;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* GameLevelBlock;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* SessionBlock;
+
+	FName PublicSessionName;
+
+protected:
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BJoinUndecided;
+
+	//todo refactor this to massive of widgets
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BJoinRedColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BJoinBlueColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BJoinGreenColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BJoinYellowColor;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* NameRedColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* NameBlueColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* NameGreenColor;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UTextBlock* NameYellowColor;
+
 };
