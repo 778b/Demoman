@@ -36,6 +36,8 @@ public:
 	FNSOnCreateSessionComplete	OnCreateSessionCompleteEvent;
 	FNSOnFindSessionsComplete	OnFindSessionsCompleteEvent;
 
+	FName LastSessionName;
+
 protected:
 	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
 

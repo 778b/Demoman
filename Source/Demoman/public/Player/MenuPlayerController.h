@@ -23,14 +23,8 @@ public:
 	void BeginPlay() override;
 
 	TSubclassOf<UUserWidget> GetFindedSessionClass();
-	TSubclassOf<UUserWidget> GetSessionWidgetClass();
-
-public:
-	//todo weak pointer
-	USessionUserWidget* SessionWidget;
 
 protected:
-	TSubclassOf<USessionUserWidget> GameLobbyWidgetClass;
 	TSubclassOf<UFindedSessionWidget> FindedLobbyWidgetClass;
 	TSubclassOf<UGameUserWidget> GameWidgetClass;
 	TSubclassOf<UMainMenuWidget> MenuWidgetClass;

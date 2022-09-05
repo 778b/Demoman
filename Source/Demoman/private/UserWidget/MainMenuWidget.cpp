@@ -17,7 +17,11 @@
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& obj)
 	: Super(obj)
 {
+	if (!GetGameInstance()) return;
+	UCSNetworkSubsystem* NetworkSystem = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
 
+	NetworkSystem->OnJoinSessionCompleteEvent.Add(FOnJoinSessionCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteJoinSession));
 }
 
 void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
@@ -82,4 +86,9 @@ void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)
 			FindedSessionScrollBox->AddChild(TempWidget);
 		}
 	}
+}
+
+void UMainMenuWidget::OnCompleteJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	RemoveFromViewport();
 }

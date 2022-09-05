@@ -100,6 +100,8 @@ void UCSNetworkSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessi
 		const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
 		checkf(SessionPtr.IsValid(), TEXT("NetworkSystem missed SessionPtr"));
 
+		LastSessionName = SessionName;
+
 		FString ConnectionInfo;
 		SessionPtr.Get()->GetResolvedConnectString(SessionName, ConnectionInfo);
 		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, ConnectionInfo);
@@ -123,7 +125,9 @@ void UCSNetworkSubsystem::OnCreateSessionCompleted(FName SessionName, bool Succe
 		FString MapName;
 		check(SessionPtr->GetSessionSettings(SessionName)->Get(SETTING_MAPNAME, MapName));
 
-		UGameplayStatics::OpenLevel(GetWorld(), FName(MapName));
+		LastSessionName = SessionName;
+
+		UGameplayStatics::OpenLevel(GetWorld(), FName(MapName), true, TEXT("?listen"));
 	}
 	OnCreateSessionCompleteEvent.Broadcast(SessionName, Success);
 }

@@ -15,6 +15,7 @@ public:
 	APlayerCharacter();
 
 	void SetTeamMaterial(UMaterialInterface* newMaterial);
+
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);

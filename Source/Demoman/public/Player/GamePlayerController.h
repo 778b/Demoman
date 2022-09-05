@@ -7,7 +7,7 @@
 #include "GamePlayerController.generated.h"
 
 class UGameUserWidget;
-
+class USessionUserWidget;
 
 UCLASS()
 class DEMOMAN_API AGamePlayerController : public APlayerController
@@ -19,9 +19,13 @@ public:
 
 	void UpdateGameWidget(int8 bombs, int8 power, float speed);
 
+	void BeginPlay() override;
+
 public:
 	UGameUserWidget* GameWidget;
+	USessionUserWidget* SessionWidget;
 
 protected:
 	TSubclassOf<UGameUserWidget> GameWidgetClass;
+	TSubclassOf<USessionUserWidget> GameLobbyWidgetClass;
 };

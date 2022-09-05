@@ -44,6 +44,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void DrawDebugPlayers();
+	UFUNCTION(BlueprintCallable)
+		FName GetRoomName();
+	UFUNCTION(BlueprintImplementableEvent)
+		void ConstructWidget();
 
 protected:
 	virtual void OnRegisterPlayersCompleted(FName ServerName, const TArray< FUniqueNetIdRef >& Players, bool Success);

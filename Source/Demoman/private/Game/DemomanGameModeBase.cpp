@@ -13,7 +13,7 @@
 
 ADemomanGameModeBase::ADemomanGameModeBase()
 {
-	DefaultPawnClass = APlayerCharacter::StaticClass();
+	DefaultPawnClass = nullptr;//APlayerCharacter::StaticClass();
 	HUDClass = APlayerHUD::StaticClass();
 	PlayerControllerClass = AGamePlayerController::StaticClass();
 	PlayerStateClass = AGamePlayerState::StaticClass();

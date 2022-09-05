@@ -45,6 +45,7 @@ private:
 
 	FOnlineSessionSearch LastSearchSettings;
 
-	virtual void OnCompleteSessionCreate(FName SessionName, bool result);
+	virtual void OnCompleteSessionCreate(FName SessionName, bool Result);
 	virtual void OnCompleteSessionFinding(bool bIsSuccess);
+	virtual void OnCompleteJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };
