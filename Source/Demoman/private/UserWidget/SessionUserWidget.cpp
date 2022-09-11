@@ -4,63 +4,80 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/ScrollBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "UserWidget/PlayerUndecidedWidget.h"
 #include "Game/CSNetworkSubsystem.h"
+#include "Game/DemomanGameState.h"
 
 void USessionUserWidget::NativeConstruct()
 {
-	// Debug todo delete
-	// must relocated to NetworkSystem
-	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetOwningPlayer()->GetWorld());
-	checkf(SessionPtr.IsValid(), TEXT("Session is not valid!"));
-
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
-	checkf(NetworkSys, TEXT("FindedWidget missed NetworkSystem"));
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
 	PublicSessionName = NetworkSys->LastSessionName;
 
-	SessionPtr->AddOnRegisterPlayersCompleteDelegate_Handle(FOnRegisterPlayersCompleteDelegate::CreateUObject(
-		this , &USessionUserWidget::OnRegisterPlayersCompleted));
+	FGameModeEvents::GameModePostLoginEvent.AddUObject(this, &USessionUserWidget::OnPostLoginEvent);
+	FGameModeEvents::GameModeLogoutEvent.AddUObject(this, &USessionUserWidget::OnLogoutEvent);
 
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::UpdateWidgetSettings);
+	tempState->UpdateLobbyWidget();
 	ConstructWidget();
 }
 
-void USessionUserWidget::OnJoinSession(APlayerController* JoinedPlayer)
+void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 {
-}
+	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
+		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+			GetGameInstance()->GetPrimaryPlayerUniqueId()));
+	checkf(tempPlayerState, TEXT("SessionWidget missed PlayerState"));
 
-void USessionUserWidget::OnLeaveSession(APlayerController* LeavedPlayer)
-{
-}
+	// Checking selected slot, maybe it is already busy
+	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
+	{
+		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
+		if (SelectedLobby != Undecided && CastedState->PlayerLobbyState == SelectedLobby)
+		{
+			ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+			tempState->UpdateLobbyWidget();
 
-void USessionUserWidget::OnJoinTeam(FColor SelectedColor, APlayerController* Player)
-{
-}
+			SetupPlayersInLobby();
+			return;
+		};
+	}
 
-void USessionUserWidget::OnJoinUndecided(APlayerController* Leaver)
-{
-}
+	tempPlayerState->SetPlayerLobbyState(SelectedLobby);
 
-void USessionUserWidget::OnSelectNewMap()
-{
+	if (SelectedLobby != Undecided) BJoinUndecided->SetVisibility(ESlateVisibility::Visible);
+	else BJoinUndecided->SetVisibility(ESlateVisibility::Hidden);
+
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->UpdateLobbyWidget();
+
+	SetupPlayersInLobby();
 }
 
 void USessionUserWidget::OnStartGame()
 {
-	//UGameplayStatics::OpenLevel()
+	//GetWorld()->GetAuthGameMode()->FindPlayerStart();
+	
 }
 
 void USessionUserWidget::DrawDebugPlayers()
 {
-	//for (APlayerState*& Player : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, Player->GetPlayerName());
+#ifdef UE_BUILD_DEVELOPMENT
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Begin"));
+	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
+	{
+		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
+		FString TEmpString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->PlayerLobbyState);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEmpString);
+	}
+#endif
 
-	//}
-	//for (ULocalPlayer* Player : GetOwningPlayer()->GetWorld()->GetGameInstance()->GetLocalPlayers())
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, Player->GetNickname());
-	//}
 }
 
 FName USessionUserWidget::GetRoomName()
@@ -68,9 +85,73 @@ FName USessionUserWidget::GetRoomName()
 	return PublicSessionName;
 }
 
-void USessionUserWidget::OnRegisterPlayersCompleted(FName ServerName, const TArray<FUniqueNetIdRef>& Players, bool Success)
+void USessionUserWidget::SetupPlayersInLobby()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, "Session was registered new Player");
+	SetupDafeultSettings();
 
-	// todo Players
+	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
+	{
+		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
+
+		switch (CastedState->GetPlayerLobbyState())
+		{
+		case Undecided:
+		{
+			UPlayerUndecidedWidget* tempWidget = CreateWidget<UPlayerUndecidedWidget>(GetOwningPlayer(), CastedState->PlayerUndecidedWidgetClass);
+			tempWidget->PlayerName->SetText(FText::FromString(tempPlayer->GetPlayerName()));
+			UndecidedScrollBox->AddChild(tempWidget);
+		}
+			break;
+		case Red:
+			BJoinRedColor->SetVisibility(ESlateVisibility::Collapsed);
+			NameRedColor->SetText(FText::FromString(CastedState->GetPlayerName()));
+			NameRedColor->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case Blue:
+			BJoinBlueColor->SetVisibility(ESlateVisibility::Collapsed);
+			NameBlueColor->SetText(FText::FromString(CastedState->GetPlayerName()));
+			NameBlueColor->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case Green:
+			BJoinGreenColor->SetVisibility(ESlateVisibility::Collapsed);
+			NameGreenColor->SetText(FText::FromString(CastedState->GetPlayerName()));
+			NameGreenColor->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case Yellow:
+			BJoinYellowColor->SetVisibility(ESlateVisibility::Collapsed);
+			NameYellowColor->SetText(FText::FromString(CastedState->GetPlayerName()));
+			NameYellowColor->SetVisibility(ESlateVisibility::Visible);
+			break;
+		}
+	}
+}
+
+void USessionUserWidget::SetupDafeultSettings()
+{
+	UndecidedScrollBox->ClearChildren();
+
+	NameYellowColor->SetVisibility(ESlateVisibility::Collapsed);
+	NameGreenColor->SetVisibility(ESlateVisibility::Collapsed);
+	NameBlueColor->SetVisibility(ESlateVisibility::Collapsed);
+	NameRedColor->SetVisibility(ESlateVisibility::Collapsed);
+
+	BJoinGreenColor->SetVisibility(ESlateVisibility::Visible);
+	BJoinYellowColor->SetVisibility(ESlateVisibility::Visible);
+	BJoinBlueColor->SetVisibility(ESlateVisibility::Visible);
+	BJoinRedColor->SetVisibility(ESlateVisibility::Visible);
+}
+
+void USessionUserWidget::UpdateWidgetSettings()
+{
+	SetupPlayersInLobby();
+}
+
+void USessionUserWidget::OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer)
+{
+	SetupPlayersInLobby();
+}
+
+void USessionUserWidget::OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting)
+{
+	SetupPlayersInLobby();
 }

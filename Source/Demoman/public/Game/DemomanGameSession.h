@@ -6,13 +6,15 @@
 #include "GameFramework/GameSession.h"
 #include "DemomanGameSession.generated.h"
 
-/**
- * 
- */
+
+
 UCLASS()
 class DEMOMAN_API ADemomanGameSession : public AGameSession
 {
 	GENERATED_BODY()
 
-		ADemomanGameSession();
+public:
+	ADemomanGameSession();
+
+
 };

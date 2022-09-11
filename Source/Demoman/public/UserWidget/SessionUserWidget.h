@@ -5,23 +5,20 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "OnlineSubsystemUtils.h"
+#include "Player/GamePlayerState.h"
 #include "SessionUserWidget.generated.h"
 
 
+class UScrollBox;
 class UTextBlock;
 class UButton;
+class UPlayerUndecidedWidget;
 
-USTRUCT(BlueprintType)
+
 struct FPlayerLobbyState
 {
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly)
-		APlayerController* Player = nullptr;
-
-	UPROPERTY(BlueprintReadOnly)
-		FColor PlayerColor = FColor::White;
+	APlayerState* Player = nullptr;
+	EPlayerLobbyTeam PlayerTeam = Undecided;
 };
 
 
@@ -33,14 +30,11 @@ class DEMOMAN_API USessionUserWidget : public UUserWidget
 public:
 	void NativeConstruct() override;
 
-	void OnJoinSession(APlayerController* JoinedPlayer);
-	void OnLeaveSession(APlayerController* LeavedPlayer);
+	UFUNCTION(BlueprintCallable)
+		void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
 
-	void OnJoinTeam(FColor SelectedColor, APlayerController* Player);
-	void OnJoinUndecided(APlayerController* Leaver);
-
-	void OnSelectNewMap();
-	void OnStartGame();
+	UFUNCTION(BlueprintCallable)
+		void OnStartGame();
 
 	UFUNCTION(BlueprintCallable)
 		void DrawDebugPlayers();
@@ -49,15 +43,20 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void ConstructWidget();
 
+	// Blueprint Implementatation of function SetupPlayersInLobby()
+	UFUNCTION(BlueprintCallable)
+		void UpdateWidgetSettings();
+		
+
 protected:
-	virtual void OnRegisterPlayersCompleted(FName ServerName, const TArray< FUniqueNetIdRef >& Players, bool Success);
+	virtual void SetupDafeultSettings();
+	virtual void SetupPlayersInLobby();
+
+	virtual void OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer);
+	virtual void OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting);
 
 public:
-	UPROPERTY(BlueprintReadOnly)
-		TArray<APlayerController*> UndecidedPlayers;
-
-	UPROPERTY(BlueprintReadOnly)
-		TArray<FPlayerLobbyState> DecidedPlayers;
+	TArray<FPlayerLobbyState> LobbyPlayers;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UTextBlock* GameLevelBlock;
@@ -70,7 +69,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BJoinUndecided;
 
-	//todo refactor this to massive of widgets
+	// Cant refactor this to one massive
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BJoinRedColor;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -88,5 +87,10 @@ protected:
 		UTextBlock* NameGreenColor;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UTextBlock* NameYellowColor;
+
+	// We can use scrollbox, but anyway we got only 4 players
+	// Refactoring this in next update, when will add map for 4+ players 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UScrollBox* UndecidedScrollBox;
 
 };

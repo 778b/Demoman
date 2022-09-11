@@ -7,7 +7,6 @@
 #include "DemomanGameModeBase.generated.h"
 
 
-
 UCLASS()
 class DEMOMAN_API ADemomanGameModeBase : public AGameModeBase
 {

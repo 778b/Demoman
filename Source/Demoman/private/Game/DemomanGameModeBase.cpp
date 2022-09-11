@@ -3,7 +3,9 @@
 #include "Game/DemomanGameModeBase.h"
 
 #include "Blueprint/UserWidget.h"
+
 #include "Game/DemomanGameSession.h"
+#include "Game/DemomanGameState.h"
 #include "GameFramework/GameStateBase.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Player/PlayerCharacter.h"
@@ -13,10 +15,10 @@
 
 ADemomanGameModeBase::ADemomanGameModeBase()
 {
-	DefaultPawnClass = nullptr;//APlayerCharacter::StaticClass();
-	HUDClass = APlayerHUD::StaticClass();
-	PlayerControllerClass = AGamePlayerController::StaticClass();
-	PlayerStateClass = AGamePlayerState::StaticClass();
-	GameSessionClass = ADemomanGameSession::StaticClass();
+	DefaultPawnClass		= nullptr;					//APlayerCharacter::StaticClass();
+	HUDClass				= APlayerHUD::StaticClass();
+	PlayerControllerClass	= AGamePlayerController::StaticClass();
+	PlayerStateClass		= AGamePlayerState::StaticClass();
+	GameSessionClass		= ADemomanGameSession::StaticClass();
+	GameStateClass			= ADemomanGameState::StaticClass();
 }
-

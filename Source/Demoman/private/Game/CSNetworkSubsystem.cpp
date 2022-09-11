@@ -14,7 +14,9 @@ UCSNetworkSubsystem::UCSNetworkSubsystem()
 	OnJoinSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnJoinSessionCompleted);
 	OnCreateSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnCreateSessionCompleted);
 	OnFindSessionsCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnFindSessionsCompleted);
+
 }
+
 
 
 /*
@@ -89,6 +91,7 @@ void UCSNetworkSubsystem::FindSessions(int32 PlayerCount, int32 MaxSearchResult)
  */
 
 
+
 void UCSNetworkSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::FromInt(Result));
@@ -137,3 +140,4 @@ void UCSNetworkSubsystem::OnFindSessionsCompleted(bool Success)
 
 	OnFindSessionsCompleteEvent.Broadcast(Success);
 }
+

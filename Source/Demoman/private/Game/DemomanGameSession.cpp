@@ -9,4 +9,5 @@ ADemomanGameSession::ADemomanGameSession()
 {
 	//UpdateSessionJoinability();
 	SessionName = FName("Demoman lobby");
+
 }

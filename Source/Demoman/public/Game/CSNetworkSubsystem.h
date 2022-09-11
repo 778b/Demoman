@@ -12,6 +12,10 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnJoinSessionComplete, FName, EOnJoinSes
 DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnCreateSessionComplete, FName, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FNSOnFindSessionsComplete, bool);
 
+/*	Player's support network system
+ *	instanced once for client
+ *	NOT REPLICATED
+ */
 UCLASS()
 class DEMOMAN_API UCSNetworkSubsystem : public UGameInstanceSubsystem
 {
@@ -26,10 +30,12 @@ public:
 
 	FOnlineSessionSearch GetLastSearchResult() { return LastSearchSettings.Get(); };
 
+
 protected:
 	virtual void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	virtual void OnCreateSessionCompleted(FName SessionName, bool Success);
 	virtual void OnFindSessionsCompleted(bool Success);
+
 
 public:
 	FNSOnJoinSessionComplete	OnJoinSessionCompleteEvent;
@@ -37,6 +43,8 @@ public:
 	FNSOnFindSessionsComplete	OnFindSessionsCompleteEvent;
 
 	FName LastSessionName;
+
+
 
 protected:
 	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
