@@ -33,8 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Reliable, Server)
 		void OnStartGame();
+		void OnStartGame_Implementation();
 
 	UFUNCTION(BlueprintCallable)
 		void DrawDebugPlayers();

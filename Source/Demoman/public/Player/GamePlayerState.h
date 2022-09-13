@@ -39,6 +39,7 @@ public:
 		void SetPlayerLobbyStateClient(EPlayerLobbyTeam newState);
 		void SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam newState);
 
+
 public:
 	UPROPERTY()
 	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;

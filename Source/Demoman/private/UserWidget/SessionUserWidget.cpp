@@ -10,6 +10,8 @@
 #include "UserWidget/PlayerUndecidedWidget.h"
 #include "Game/CSNetworkSubsystem.h"
 #include "Game/DemomanGameState.h"
+#include "Player/GamePlayerController.h"
+#include "Player/PlayerCharacter.h"
 
 void USessionUserWidget::NativeConstruct()
 {
@@ -60,9 +62,32 @@ void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	SetupPlayersInLobby();
 }
 
-void USessionUserWidget::OnStartGame()
+void USessionUserWidget::OnStartGame_Implementation()
 {
-	//GetWorld()->GetAuthGameMode()->FindPlayerStart();
+	// Check all player states
+	for (APlayerState* tempPlayer : GetWorld()->GetGameState()->PlayerArray)
+	{
+		AGamePlayerState* CastedPlayerState = Cast<AGamePlayerState>(tempPlayer);
+		checkf(CastedPlayerState, TEXT("SessionWidget cant get GamePlayerState"));
+		if (CastedPlayerState->PlayerLobbyState == Undecided) return;
+	}
+	
+	// StartGame
+	for (APlayerState*  tempPlayer : GetWorld()->GetGameState()->PlayerArray)
+	{
+		AController* tempController = tempPlayer->GetOwner<AController>();
+		checkf(tempController, TEXT("SessionWidget cant get Controller"));
+		check(GetWorld()->GetAuthGameMode());
+		AActor* tempActor = GetWorld()->GetAuthGameMode()->ChoosePlayerStart(tempController);
+		checkf(tempActor, TEXT("SessionWidget cant find PlayerStart"));
+		APlayerCharacter* tempPlayerPawn = GetWorld()->SpawnActor<APlayerCharacter>(
+			tempActor->GetActorLocation(), FRotator(0.f));
+		tempActor->Destroy(true);
+		checkf(tempPlayerPawn, TEXT("SessionWidget cant create PlayerPawn"));
+		tempController->Possess(tempPlayerPawn);
+		AGamePlayerController* tempCastedController = Cast<AGamePlayerController>(tempController);
+		tempCastedController->OnStartGame();
+	}
 	
 }
 

@@ -45,3 +45,12 @@ void AGamePlayerController::BeginPlay()
 		SetShowMouseCursor(true);
 	}
 }
+
+void AGamePlayerController::OnStartGame_Implementation()
+{
+	SessionWidget->RemoveFromViewport();
+	SetInputMode(FInputModeGameOnly());
+	if (GetPawn()) GetPawn()->EnableInput(this);
+	else GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("Cant find the Pawn"));
+	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("ClearedViewport"));
+}

@@ -9,6 +9,7 @@
 class UGameUserWidget;
 class USessionUserWidget;
 
+
 UCLASS()
 class DEMOMAN_API AGamePlayerController : public APlayerController
 {
@@ -20,6 +21,10 @@ public:
 	void UpdateGameWidget(int8 bombs, int8 power, float speed);
 
 	void BeginPlay() override;
+
+	UFUNCTION(Reliable, Client)
+		void OnStartGame();
+		void OnStartGame_Implementation();
 
 public:
 	UGameUserWidget* GameWidget;
