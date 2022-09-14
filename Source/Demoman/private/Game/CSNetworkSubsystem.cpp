@@ -17,8 +17,6 @@ UCSNetworkSubsystem::UCSNetworkSubsystem()
 
 }
 
-
-
 /*
  *	// Generation Functions
  */
@@ -34,8 +32,11 @@ void UCSNetworkSubsystem::JoinSession(const FOnlineSessionSearchResult& SessionR
 	}
 	SessionPtr->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 
+	FString TempStringName;
+	SessionResult.Session.SessionSettings.Get(SETTING_GAMEMODE, TempStringName);
+
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	SessionPtr->JoinSession(*localPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionResult);
+	SessionPtr->JoinSession(*localPlayer->GetPreferredUniqueNetId(), FName(TempStringName), SessionResult);
 }
 
 void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
@@ -46,6 +47,8 @@ void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, 
 		OnCreateSessionCompleteEvent.Broadcast(NAME_None, false);
 		return;
 	}
+
+	FName TempSessionName(SessionName);
 
 	FOnlineSessionSettings CurrentSessionSettings = FOnlineSessionSettings();
 
@@ -64,7 +67,7 @@ void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, 
 	SessionPtr->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
 
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	SessionPtr->CreateSession(*localPlayer->GetPreferredUniqueNetId(), FName(SessionName), CurrentSessionSettings);
+	SessionPtr->CreateSession(*localPlayer->GetPreferredUniqueNetId(), TempSessionName, CurrentSessionSettings);
 }
 
 void UCSNetworkSubsystem::FindSessions(int32 PlayerCount, int32 MaxSearchResult)

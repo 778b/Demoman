@@ -15,6 +15,7 @@
 
 void USessionUserWidget::NativeConstruct()
 {
+	
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
 	PublicSessionName = NetworkSys->LastSessionName;
@@ -24,8 +25,9 @@ void USessionUserWidget::NativeConstruct()
 
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
-	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::UpdateWidgetSettings);
+	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 	tempState->UpdateLobbyWidget();
+	//SetupPlayersInLobby();
 	ConstructWidget();
 }
 
@@ -36,21 +38,8 @@ void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 			GetGameInstance()->GetPrimaryPlayerUniqueId()));
 	checkf(tempPlayerState, TEXT("SessionWidget missed PlayerState"));
 
-	// Checking selected slot, maybe it is already busy
-	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
-	{
-		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
-		if (SelectedLobby != Undecided && CastedState->PlayerLobbyState == SelectedLobby)
-		{
-			ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
-			tempState->UpdateLobbyWidget();
-
-			SetupPlayersInLobby();
-			return;
-		};
-	}
-
 	tempPlayerState->SetPlayerLobbyState(SelectedLobby);
+	SetupPlayersInLobby();
 
 	if (SelectedLobby != Undecided) BJoinUndecided->SetVisibility(ESlateVisibility::Visible);
 	else BJoinUndecided->SetVisibility(ESlateVisibility::Hidden);
@@ -59,7 +48,7 @@ void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
 	tempState->UpdateLobbyWidget();
 
-	SetupPlayersInLobby();
+	//SetupPlayersInLobby();
 }
 
 void USessionUserWidget::OnStartGame_Implementation()
@@ -98,8 +87,8 @@ void USessionUserWidget::DrawDebugPlayers()
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
-		FString TEmpString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->PlayerLobbyState);
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEmpString);
+		FString TempString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->PlayerLobbyState);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TempString);
 	}
 #endif
 
@@ -112,7 +101,7 @@ FName USessionUserWidget::GetRoomName()
 
 void USessionUserWidget::SetupPlayersInLobby()
 {
-	SetupDafeultSettings();
+	SetupDefaultSettings();
 
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
@@ -151,7 +140,7 @@ void USessionUserWidget::SetupPlayersInLobby()
 	}
 }
 
-void USessionUserWidget::SetupDafeultSettings()
+void USessionUserWidget::SetupDefaultSettings()
 {
 	UndecidedScrollBox->ClearChildren();
 

@@ -41,6 +41,8 @@ public:
 		void DrawDebugPlayers();
 	UFUNCTION(BlueprintCallable)
 		FName GetRoomName();
+
+	// Blueprint event for native Construct
 	UFUNCTION(BlueprintImplementableEvent)
 		void ConstructWidget();
 
@@ -50,7 +52,9 @@ public:
 		
 
 protected:
-	virtual void SetupDafeultSettings();
+	// Clearing all buttons and boxes 
+	virtual void SetupDefaultSettings();
+	// Setup Players settings in widget
 	virtual void SetupPlayersInLobby();
 
 	virtual void OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer);

@@ -12,6 +12,7 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnJoinSessionComplete, FName, EOnJoinSes
 DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnCreateSessionComplete, FName, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FNSOnFindSessionsComplete, bool);
 
+
 /*	Player's support network system
  *	instanced once for client
  *	NOT REPLICATED

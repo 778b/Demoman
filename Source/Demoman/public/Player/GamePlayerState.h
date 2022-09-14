@@ -39,10 +39,11 @@ public:
 		void SetPlayerLobbyStateClient(EPlayerLobbyTeam newState);
 		void SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam newState);
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	UPROPERTY()
-	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;
+	UPROPERTY(Replicated)
+		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;
 
 	TSubclassOf<UPlayerUndecidedWidget> PlayerUndecidedWidgetClass;
 
