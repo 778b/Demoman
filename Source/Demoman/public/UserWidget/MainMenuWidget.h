@@ -24,7 +24,7 @@ public:
 		void CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName);
 
 	UFUNCTION(BlueprintCallable)
-		void FindGameSessions(int32 PlayerCount, int32 MaxSearchResult);
+		void FindGameSessions(int32 MaxSearchResult, bool IsLAN);
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void StartLoadingScreen();

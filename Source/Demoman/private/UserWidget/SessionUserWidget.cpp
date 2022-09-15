@@ -25,9 +25,10 @@ void USessionUserWidget::NativeConstruct()
 
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
+
 	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 	tempState->UpdateLobbyWidget();
-	//SetupPlayersInLobby();
+
 	ConstructWidget();
 }
 
@@ -77,7 +78,10 @@ void USessionUserWidget::OnStartGame_Implementation()
 		AGamePlayerController* tempCastedController = Cast<AGamePlayerController>(tempController);
 		tempCastedController->OnStartGame();
 	}
-	
+
+	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
+
 }
 
 void USessionUserWidget::DrawDebugPlayers()

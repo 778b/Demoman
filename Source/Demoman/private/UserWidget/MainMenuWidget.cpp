@@ -37,7 +37,7 @@ void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, 
 	NetworkSystem->CreateSession(NumPublicConnections, IsLAN, SessionName, LevelName);
 }
 
-void UMainMenuWidget::FindGameSessions(int32 PlayerCount, int32 MaxSearchResult)
+void UMainMenuWidget::FindGameSessions(int32 MaxSearchResult, bool IsLAN)
 {
 	UpdateSessionsButton->SetIsEnabled(false);
 
@@ -45,20 +45,12 @@ void UMainMenuWidget::FindGameSessions(int32 PlayerCount, int32 MaxSearchResult)
 	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
 
 	NetworkSystem->OnFindSessionsCompleteEvent.AddUObject(this, &UMainMenuWidget::OnCompleteSessionFinding);
-	NetworkSystem->FindSessions(PlayerCount, MaxSearchResult);
+	NetworkSystem->FindSessions(MaxSearchResult, IsLAN);
 }
 
 void UMainMenuWidget::OnCompleteSessionCreate(FName SessionName, bool result)
 {
 	CreateSessionButton->SetIsEnabled(true);
-
-	//TempController->SessionWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());
-	//checkf(TempController->SessionWidget, TEXT("MainMenu cant create SessionWidget!"));
-
-	//RemoveFromViewport();
-	//TempController->SessionWidget->GameLevelBlock->SetText(FText::FromString(SelectedGameLevel.ToString()));
-	//TempController->SessionWidget->PublicSessionName = SessionName;
-	//TempController->SessionWidget->AddToPlayerScreen(1);
 }
 
 void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)

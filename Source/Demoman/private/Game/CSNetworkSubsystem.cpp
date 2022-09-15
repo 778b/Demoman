@@ -14,7 +14,7 @@ UCSNetworkSubsystem::UCSNetworkSubsystem()
 	OnJoinSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnJoinSessionCompleted);
 	OnCreateSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnCreateSessionCompleted);
 	OnFindSessionsCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnFindSessionsCompleted);
-
+	OnStartSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnStartSessionCompleted);
 }
 
 /*
@@ -37,6 +37,18 @@ void UCSNetworkSubsystem::JoinSession(const FOnlineSessionSearchResult& SessionR
 
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	SessionPtr->JoinSession(*localPlayer->GetPreferredUniqueNetId(), FName(TempStringName), SessionResult);
+}
+
+void UCSNetworkSubsystem::StartSession(FName SessionName)
+{
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
+	if (!SessionPtr.IsValid())
+	{
+		OnStartSessionCompleteEvent.Broadcast(SessionName, false);
+		return;
+	}
+	SessionPtr->AddOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegate);
+	SessionPtr->StartSession(SessionName);
 }
 
 void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
@@ -70,7 +82,7 @@ void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, 
 	SessionPtr->CreateSession(*localPlayer->GetPreferredUniqueNetId(), TempSessionName, CurrentSessionSettings);
 }
 
-void UCSNetworkSubsystem::FindSessions(int32 PlayerCount, int32 MaxSearchResult)
+void UCSNetworkSubsystem::FindSessions(int32 MaxSearchResult, bool WantLan)
 {
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
 	if (!SessionPtr.IsValid())
@@ -81,6 +93,7 @@ void UCSNetworkSubsystem::FindSessions(int32 PlayerCount, int32 MaxSearchResult)
 
 	SessionPtr->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
 
+	LastSearchSettings->bIsLanQuery = WantLan;
 	LastSearchSettings->MaxSearchResults = MaxSearchResult;
 	LastSearchSettings->TimeoutInSeconds = 1000;
 
@@ -116,6 +129,11 @@ void UCSNetworkSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessi
 	}
 
 	OnJoinSessionCompleteEvent.Broadcast(SessionName, Result);
+}
+
+void UCSNetworkSubsystem::OnStartSessionCompleted(FName SessionName, bool Success)
+{
+	OnStartSessionCompleteEvent.Broadcast(SessionName, Success);
 }
 
 void UCSNetworkSubsystem::OnCreateSessionCompleted(FName SessionName, bool Success)
