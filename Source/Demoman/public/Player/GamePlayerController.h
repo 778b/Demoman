@@ -23,6 +23,10 @@ public:
 	void BeginPlay() override;
 
 	UFUNCTION(Reliable, Client)
+		void OnPrepareGame();
+		void OnPrepareGame_Implementation();
+
+	UFUNCTION(Reliable, Client)
 		void OnStartGame();
 		void OnStartGame_Implementation();
 

@@ -16,5 +16,4 @@ class DEMOMAN_API APlayerHUD : public AHUD
 public:
 	void DrawHUD() override;
 
-private:
 };

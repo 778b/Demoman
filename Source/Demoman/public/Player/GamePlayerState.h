@@ -39,6 +39,7 @@ public:
 		void SetPlayerLobbyStateClient(EPlayerLobbyTeam newState);
 		void SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam newState);
 
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
@@ -48,4 +49,5 @@ public:
 	TSubclassOf<UPlayerUndecidedWidget> PlayerUndecidedWidgetClass;
 
 	FOnUpdatePlayerState OnUpdatePlayerStateDelegate;
+
 };

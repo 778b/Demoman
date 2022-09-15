@@ -62,26 +62,13 @@ void USessionUserWidget::OnStartGame_Implementation()
 		if (CastedPlayerState->PlayerLobbyState == Undecided) return;
 	}
 	
-	// StartGame
-	for (APlayerState*  tempPlayer : GetWorld()->GetGameState()->PlayerArray)
-	{
-		AController* tempController = tempPlayer->GetOwner<AController>();
-		checkf(tempController, TEXT("SessionWidget cant get Controller"));
-		check(GetWorld()->GetAuthGameMode());
-		AActor* tempActor = GetWorld()->GetAuthGameMode()->ChoosePlayerStart(tempController);
-		checkf(tempActor, TEXT("SessionWidget cant find PlayerStart"));
-		APlayerCharacter* tempPlayerPawn = GetWorld()->SpawnActor<APlayerCharacter>(
-			tempActor->GetActorLocation(), FRotator(0.f));
-		tempActor->Destroy(true);
-		checkf(tempPlayerPawn, TEXT("SessionWidget cant create PlayerPawn"));
-		tempController->Possess(tempPlayerPawn);
-		AGamePlayerController* tempCastedController = Cast<AGamePlayerController>(tempController);
-		tempCastedController->OnStartGame();
-	}
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_StartGameTimer();
 
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
-
+	NetworkSys->StartSession(PublicSessionName);
 }
 
 void USessionUserWidget::DrawDebugPlayers()

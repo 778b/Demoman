@@ -46,11 +46,24 @@ void AGamePlayerController::BeginPlay()
 	}
 }
 
-void AGamePlayerController::OnStartGame_Implementation()
+void AGamePlayerController::OnPrepareGame_Implementation()
 {
 	SessionWidget->RemoveFromViewport();
-	SetInputMode(FInputModeGameOnly());
-	if (GetPawn()) GetPawn()->EnableInput(this);
-	else GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("Cant find the Pawn"));
+	
+	APawn* tempPawn = GetPawn();
+	checkf(tempPawn, TEXT("PlayerController missed pawn"));
+
+	tempPawn->DisableInput(this);
 	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("ClearedViewport"));
+}
+
+void AGamePlayerController::OnStartGame_Implementation()
+{
+	SetInputMode(FInputModeGameOnly());
+
+	APawn* tempPawn = GetPawn();
+	checkf(tempPawn, TEXT("PlayerController missed pawn"));
+
+	tempPawn->EnableInput(this);
+	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("Game Started!"));
 }

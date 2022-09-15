@@ -9,7 +9,7 @@
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "Game/CSNetworkSubsystem.h"
 #include "UserWidget/SessionUserWidget.h"
 
@@ -22,6 +22,11 @@ UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& obj)
 	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
 
 	NetworkSystem->OnJoinSessionCompleteEvent.Add(FOnJoinSessionCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteJoinSession));
+}
+
+void UMainMenuWidget::StartSingleGameSession(FName LevelName)
+{
+	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 }
 
 void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
