@@ -16,6 +16,8 @@ public:
 
 	void SetTeamMaterial(UMaterialInterface* newMaterial);
 
+	void PossessedBy(AController* NewController) override;
+
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);

@@ -19,16 +19,14 @@ public:
 	AGamePlayerController();
 
 	void UpdateGameWidget(int8 bombs, int8 power, float speed);
+	void CreateGameWidget();
 
 	void BeginPlay() override;
 
-	UFUNCTION(Reliable, Client)
-		void OnPrepareGame();
-		void OnPrepareGame_Implementation();
+	void OnPrepareGame();
+	void OnStartGame();
 
-	UFUNCTION(Reliable, Client)
-		void OnStartGame();
-		void OnStartGame_Implementation();
+	void OnPossess(APawn* InPawn) override;
 
 public:
 	UGameUserWidget* GameWidget;

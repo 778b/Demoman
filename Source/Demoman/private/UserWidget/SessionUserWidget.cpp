@@ -37,7 +37,9 @@ void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
 		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
 			GetGameInstance()->GetPrimaryPlayerUniqueId()));
-	checkf(tempPlayerState, TEXT("SessionWidget missed PlayerState"));
+
+	// Player press button before join 
+	if (!tempPlayerState) return;
 
 	tempPlayerState->SetPlayerLobbyState(SelectedLobby);
 	SetupPlayersInLobby();
@@ -48,8 +50,6 @@ void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
 	tempState->UpdateLobbyWidget();
-
-	//SetupPlayersInLobby();
 }
 
 void USessionUserWidget::OnStartGame_Implementation()
@@ -74,7 +74,6 @@ void USessionUserWidget::OnStartGame_Implementation()
 void USessionUserWidget::DrawDebugPlayers()
 {
 #ifdef UE_BUILD_DEVELOPMENT
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Begin"));
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
@@ -82,7 +81,6 @@ void USessionUserWidget::DrawDebugPlayers()
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TempString);
 	}
 #endif
-
 }
 
 FName USessionUserWidget::GetRoomName()

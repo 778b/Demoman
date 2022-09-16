@@ -39,6 +39,13 @@ public:
 		void SetPlayerLobbyStateClient(EPlayerLobbyTeam newState);
 		void SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam newState);
 
+	UFUNCTION(Reliable, Client)
+		void OnPrepareGame();
+		void OnPrepareGame_Implementation();
+
+	UFUNCTION(Reliable, Client)
+		void OnStartGame();
+		void OnStartGame_Implementation();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

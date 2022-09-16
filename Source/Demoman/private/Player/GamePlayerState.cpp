@@ -5,6 +5,7 @@
 
 #include "Game/DemomanGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/GamePlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UserWidget/PlayerUndecidedWidget.h"
 
@@ -45,6 +46,21 @@ void AGamePlayerState::SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam
 	PlayerLobbyState = newState;
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	tempState->UpdateLobbyWidget();
+}
+
+void AGamePlayerState::OnPrepareGame_Implementation()
+{
+	
+	AGamePlayerController* TempPlayerController = Cast<AGamePlayerController>(
+		GetGameInstance()->GetFirstLocalPlayerController()->GetLocalPlayer()->GetPlayerController(GetWorld()));
+	TempPlayerController->OnPrepareGame();
+}
+
+void AGamePlayerState::OnStartGame_Implementation()
+{
+	AGamePlayerController* TempPlayerController = Cast<AGamePlayerController>(
+		GetGameInstance()->GetFirstLocalPlayerController()->GetLocalPlayer()->GetPlayerController(GetWorld()));
+	TempPlayerController->OnStartGame();
 }
 
 void AGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

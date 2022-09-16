@@ -2,6 +2,7 @@
 
 #include "Player/PlayerCharacter.h"
 
+#include "Player/GamePlayerController.h"
 #include "Components/InputComponent.h"
 
 
@@ -13,6 +14,14 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::SetTeamMaterial(UMaterialInterface* newMaterial)
 {
 	PlayerModel->SetMaterial(0, newMaterial);
+}
+
+void APlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	AGamePlayerController* tempController = Cast<AGamePlayerController>(GetController());
+	checkf(tempController, TEXT("PlayerCharacter missed controller"));
+	//tempController->UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

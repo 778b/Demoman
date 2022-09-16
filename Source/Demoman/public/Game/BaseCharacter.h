@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+
 UCLASS()
 class DEMOMAN_API ABaseCharacter : public ACharacter, public IDamageInterface
 {
@@ -31,12 +32,25 @@ public:
 	void AddBombsCount(int8 AddNum);
 	void AddBombsPower(int8 AddNum);
 	void AddMovementSpeed(float AddNum);
+
+	//	IDamageInterface
+	bool DamageActor() override;
+	void DamageActorReplicated_Implementation() override;
+
+	void UpdateGameWidget();
+
+protected:
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+		void RestoreBomb();
+
 private:
 	void AddBombsPlaced(int8 AddNum);
 
 	UFUNCTION(Reliable, Client)
-	void UpdateGameWidget(int8 bombs, int8 power, float speed);
-	void UpdateGameWidget_Implementation(int8 bombs, int8 power, float speed);
+		void UpdateGameWidget(int8 bombs, int8 power, float speed);
+		void UpdateGameWidget_Implementation(int8 bombs, int8 power, float speed);
 
 public:
 	UPROPERTY()
@@ -49,21 +63,14 @@ public:
 	const int8 MaxBombsPower = 5;
 	const float MaxMovementSpeed = 600;
 
-private:
+protected:
 	int8 BombsPlaced = 0;
 	int8 BombsCount = 1;
 	int8 BombsPower = 2;
 	float MovementSpeed = 400;
 
+private:
+
 	UMaterialInterface* DeadPlayerMaterial;
-protected:
-	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void RestoreBomb();
-
-public:
-	//	IDamageInterface
-	bool DamageActor() override;
-	void DamageActorReplicated_Implementation() override;
 };

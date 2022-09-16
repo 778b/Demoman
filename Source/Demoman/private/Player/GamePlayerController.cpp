@@ -4,6 +4,7 @@
 #include "Player/GamePlayerController.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Player/PlayerCharacter.h"
 #include "UserWidget/GameUserWidget.h"
 #include "UserWidget/SessionUserWidget.h"
 #include "GameFramework/HUD.h"
@@ -24,12 +25,16 @@ AGamePlayerController::AGamePlayerController()
 
 void AGamePlayerController::UpdateGameWidget(int8 bombs, int8 power, float speed)
 {
-	if (!GameWidget)
-	{
-		GameWidget = CreateWidget<UGameUserWidget>(this, GameWidgetClass);
-		GameWidget->AddToPlayerScreen(-1);
-	}
-	if (GameWidget) GameWidget->UpdateWidget(bombs, power, speed);
+	if (!GameWidget) CreateGameWidget();
+	GameWidget->UpdateWidget(bombs, power, speed);
+}
+
+void AGamePlayerController::CreateGameWidget()
+{
+	GameWidget = CreateWidget<UGameUserWidget>(GetWorld(), GameWidgetClass);
+	checkf(GameWidget, TEXT("PlayerController cant create game widget"));
+
+	GameWidget->AddToPlayerScreen(-1);
 }
 
 void AGamePlayerController::BeginPlay()
@@ -46,18 +51,18 @@ void AGamePlayerController::BeginPlay()
 	}
 }
 
-void AGamePlayerController::OnPrepareGame_Implementation()
+void AGamePlayerController::OnPrepareGame()
 {
 	SessionWidget->RemoveFromViewport();
 	
-	APawn* tempPawn = GetPawn();
-	checkf(tempPawn, TEXT("PlayerController missed pawn"));
+	if (!GameWidget) CreateGameWidget();
+	GameWidget->StartGameAnimation();
+	
 
-	tempPawn->DisableInput(this);
 	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("ClearedViewport"));
 }
 
-void AGamePlayerController::OnStartGame_Implementation()
+void AGamePlayerController::OnStartGame()
 {
 	SetInputMode(FInputModeGameOnly());
 
@@ -66,4 +71,12 @@ void AGamePlayerController::OnStartGame_Implementation()
 
 	tempPawn->EnableInput(this);
 	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("Game Started!"));
+}
+
+void AGamePlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	APlayerCharacter* TemplPlayerCharacter = Cast<APlayerCharacter>(InPawn);
+	checkf(TemplPlayerCharacter, TEXT("PlayerController missed player character"));
+	TemplPlayerCharacter->UpdateGameWidget();
 }

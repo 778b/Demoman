@@ -65,27 +65,26 @@ void ADemomanGameState::Server_StartGameTimer_Implementation()
 
 		tempActor->Destroy(true);
 		tempController->Possess(tempPlayerPawn);
-		
-		AGamePlayerController* tempCastedController = Cast<AGamePlayerController>(tempController);
 
-		tempCastedController->OnPrepareGame();
+		AGamePlayerState* TempPlayerState = Cast<AGamePlayerState>(tempPlayer);
+		checkf(TempPlayerState, TEXT("GameState cant find player state"));
+		TempPlayerState->OnPrepareGame();
 	}
 
 
-	GetWorldTimerManager().SetTimer(StartTimer, FTimerDelegate::CreateLambda([=]()
-		{
-			for (APlayerState* tempPlayer : GetWorld()->GetGameState()->PlayerArray)
-			{
-				AController* tempController = tempPlayer->GetOwner<AController>();
-				checkf(tempController, TEXT("GameState cant get Controller"));
-				
-				AGamePlayerController* tempCastedController = Cast<AGamePlayerController>(tempController);
-				tempCastedController->OnStartGame();
-			}
-		}),
-		5.f, false, -1.f);
+	GetWorldTimerManager().SetTimer(StartTimer, FTimerDelegate::CreateUObject(this, &ADemomanGameState::StartGame),	5.f, false, -1.f);
 }
 
+void ADemomanGameState::StartGame()
+{
+	for (APlayerState* tempPlayer : GetWorld()->GetGameState()->PlayerArray)
+	{
+		AGamePlayerState* TempPlayerState = Cast<AGamePlayerState>(tempPlayer);
+		checkf(TempPlayerState, TEXT("GameState cant find player state"));
+
+		TempPlayerState->OnStartGame();
+	}
+}
 
 void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
 {

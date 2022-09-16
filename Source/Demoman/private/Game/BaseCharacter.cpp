@@ -65,7 +65,7 @@ void ABaseCharacter::AddBombsPlaced(int8 AddNum)
 
 void ABaseCharacter::UpdateGameWidget_Implementation(int8 bombs, int8 power, float speed)
 {
-	auto tempController = Cast<AGamePlayerController>(GetController());
+	AGamePlayerController* tempController = Cast<AGamePlayerController>(GetController());
 	if (tempController)
 	{
 		tempController->UpdateGameWidget(bombs,power,speed);
@@ -109,7 +109,7 @@ void ABaseCharacter::AddMovementSpeed(float AddNum)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
+
 }
 
 void ABaseCharacter::SpawnBomb_Implementation()
@@ -140,4 +140,9 @@ bool ABaseCharacter::DamageActor()
 void ABaseCharacter::DamageActorReplicated_Implementation()
 {
 	Death();
+}
+
+void ABaseCharacter::UpdateGameWidget()
+{
+	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }

@@ -26,9 +26,12 @@ public:
 		void Server_StartGameTimer();
 		void Server_StartGameTimer_Implementation();
 
+	
 protected:
 	virtual void OnRegisteredPlayersCompleted(FName sessionName, const TArray< FUniqueNetIdRef >& Players, bool Result);
 	virtual void OnUnregisteredPlayersCompleted(FName sessionName, const TArray< FUniqueNetIdRef >& Players, bool Result);
+
+	virtual void StartGame();
 
 private:
 	UFUNCTION(Reliable, NetMulticast)
