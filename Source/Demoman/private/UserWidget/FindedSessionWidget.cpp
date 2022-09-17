@@ -22,22 +22,11 @@ void UFindedSessionWidget::SetupWidgetSettings()
 	checkf(SessionResult.Session.SessionSettings.Get(SETTING_GAMEMODE, RoomName), TEXT("FindedSession had wrong session FName!"));
 	checkf(SessionResult.Session.SessionSettings.Get(SETTING_MAPNAME, MapName), TEXT("FindedSession had wrong map FName!"));
 
-	FText Players = FText::FromString(FString::FromInt(SessionResult.Session.NumOpenPrivateConnections) + "/"	
-										+ FString::FromInt(SessionResult.Session.NumOpenPublicConnections));
+	FText Players = FText::FromString(FString::FromInt(SessionResult.Session.SessionSettings.NumPrivateConnections) + "/"	
+										+ FString::FromInt(SessionResult.Session.SessionSettings.NumPublicConnections));
 
 	PingBlock->SetText(FText::AsNumber(SessionResult.PingInMs));
 	CurrentPlayersBlock->SetText(Players);
 	ServerNameBlock->SetText(FText::FromString(RoomName));
 	MapNameBlock->SetText(FText::FromString(MapName));
 }
-
-
-//checkf(GetGameInstance()->ClientTravelToSession(TempController->NetPlayerIndex, SessionName), TEXT("CantTravel To session"));
-
-/*USessionUserWidget* TempWidget = CreateWidget<USessionUserWidget>(TempController, TempController->GetSessionWidgetClass());
-checkf(TempWidget, TEXT("FindedSessionWidget cant create session widget!"));
-
-TempController->SessionWidget = TempWidget;
-TempController->SessionWidget->GameLevelBlock->SetText(MapNameBlock->GetText());
-TempController->SessionWidget->SessionBlock->SetText(ServerNameBlock->GetText());
-TempController->SessionWidget->AddToPlayerScreen(1);*/

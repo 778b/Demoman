@@ -21,6 +21,11 @@ ADemomanGameState::ADemomanGameState()
 		this, &ADemomanGameState::OnRegisteredPlayersCompleted));
 	SessionPtr->AddOnUnregisterPlayersCompleteDelegate_Handle(FOnUnregisterPlayersCompleteDelegate::CreateUObject(
 		this, &ADemomanGameState::OnUnregisteredPlayersCompleted));
+
+	FGameModeEvents::GameModePostLoginEvent.AddUObject(this, &ADemomanGameState::OnPostLoginEvent);
+	FGameModeEvents::GameModeLogoutEvent.AddUObject(this, &ADemomanGameState::OnLogoutEvent);
+
+
 }
 
 void ADemomanGameState::UpdateWidget_Implementation()
@@ -85,6 +90,32 @@ void ADemomanGameState::StartGame()
 
 		TempPlayerState->OnStartGame();
 	}
+}
+
+void ADemomanGameState::OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer)
+{
+	if (!GetWorld()) return;
+
+	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
+
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
+	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
+	++TempSessionSettings->NumPrivateConnections;
+	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
+}
+
+void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting)
+{
+	if (!GetWorld()) return;
+
+	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
+
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
+	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
+	--TempSessionSettings->NumPrivateConnections;
+	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
 }
 
 void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)

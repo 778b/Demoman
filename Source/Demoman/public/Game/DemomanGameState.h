@@ -33,6 +33,9 @@ protected:
 
 	virtual void StartGame();
 
+	virtual void OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer);
+	virtual void OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting);
+
 private:
 	UFUNCTION(Reliable, NetMulticast)
 		void UpdateWidget();
