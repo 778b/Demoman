@@ -65,6 +65,7 @@ void ADemomanGameState::Server_StartGameTimer_Implementation()
 
 		tempActor->Destroy(true);
 		tempController->Possess(tempPlayerPawn);
+		tempPlayerPawn->SetAutoTeamMaterial();
 
 		AGamePlayerState* TempPlayerState = Cast<AGamePlayerState>(tempPlayer);
 		checkf(TempPlayerState, TEXT("GameState cant find player state"));

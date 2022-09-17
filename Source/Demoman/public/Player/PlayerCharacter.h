@@ -14,8 +14,6 @@ class DEMOMAN_API APlayerCharacter : public ABaseCharacter
 public:
 	APlayerCharacter();
 
-	void SetTeamMaterial(UMaterialInterface* newMaterial);
-
 	void PossessedBy(AController* NewController) override;
 
 private:

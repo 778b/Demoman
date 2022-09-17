@@ -11,11 +11,6 @@ APlayerCharacter::APlayerCharacter()
 
 }
 
-void APlayerCharacter::SetTeamMaterial(UMaterialInterface* newMaterial)
-{
-	PlayerModel->SetMaterial(0, newMaterial);
-}
-
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

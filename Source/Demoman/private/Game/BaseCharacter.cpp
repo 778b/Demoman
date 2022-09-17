@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Player/GamePlayerState.h"
 #include "Player/PlayerHUD.h"
 #include "Player/GamePlayerController.h"
 #include "Bomb.h"
@@ -41,10 +42,30 @@ ABaseCharacter::ABaseCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 	GetCharacterMovement()->MaxAcceleration = 2000;
 
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialAsset(TEXT("/Game/Material/Skin/M_DeadedPlayer.M_DeadedPlayer"));
-	if (MaterialAsset.Succeeded())
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> DeadMaterialAsset(TEXT("/Game/Material/Skin/M_DeadedPlayer.M_DeadedPlayer"));
+	if (DeadMaterialAsset.Succeeded())
 	{
-		DeadPlayerMaterial = MaterialAsset.Object;
+		DeadPlayerMaterial = DeadMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> BlueMaterialAsset(TEXT("/Game/Material/Skin/M_BluePlayer.M_BluePlayer"));
+	if (BlueMaterialAsset.Succeeded())
+	{
+		BluePlayerMaterial = BlueMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> RedMaterialAsset(TEXT("/Game/Material/Skin/M_RedPlayer.M_RedPlayer"));
+	if (RedMaterialAsset.Succeeded())
+	{
+		RedPlayerMaterial = RedMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> GreenMaterialAsset(TEXT("/Game/Material/Skin/M_GreenPlayer.M_GreenPlayer"));
+	if (GreenMaterialAsset.Succeeded())
+	{
+		GreenPlayerMaterial = GreenMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> YellowMaterialAsset(TEXT("/Game/Material/Skin/M_YellowPlayer.M_YellowPlayer"));
+	if (YellowMaterialAsset.Succeeded())
+	{
+		YellowPlayerMaterial = YellowMaterialAsset.Object;
 	}
 }
 
@@ -84,6 +105,29 @@ void ABaseCharacter::Death_Implementation()
 	PlayerModel->SetMaterial(0, DeadPlayerMaterial);
 
 	DisableInput(Cast<APlayerController>(GetController()));
+}
+
+void ABaseCharacter::SetAutoTeamMaterial_Implementation()
+{
+	AGamePlayerState* OurState = GetPlayerState<AGamePlayerState>();
+	switch (OurState->PlayerLobbyState)
+	{
+	case EPlayerLobbyTeam::Red:
+		PlayerModel->SetMaterial(0, RedPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Blue:
+		PlayerModel->SetMaterial(0, BluePlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Yellow:
+		PlayerModel->SetMaterial(0, YellowPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Green:
+		PlayerModel->SetMaterial(0,GreenPlayerMaterial);
+		return;
+	default:
+		checkf(true, TEXT("Game crashed, how u start game without selecting player state?"));
+	}
+	
 }
 
 void ABaseCharacter::AddBombsPower(int8 AddNum)
@@ -146,3 +190,4 @@ void ABaseCharacter::UpdateGameWidget()
 {
 	UpdateGameWidget(BombsCount, BombsPower, MovementSpeed);
 }
+

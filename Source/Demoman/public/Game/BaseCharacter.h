@@ -24,6 +24,10 @@ public:
 		void Death();
 		virtual void Death_Implementation();
 
+	UFUNCTION(Reliable, NetMulticast)
+		void SetAutoTeamMaterial();
+		void SetAutoTeamMaterial_Implementation();
+
 	int8 GetPlacedBombs()		{ return BombsPlaced;	}
 	int8 GetCountBombs()		{ return BombsCount;	}
 	int8 GetBombsPower()		{ return BombsPower;	}
@@ -33,11 +37,12 @@ public:
 	void AddBombsPower(int8 AddNum);
 	void AddMovementSpeed(float AddNum);
 
+	void UpdateGameWidget();
+	void SetTeamMaterial(UMaterialInterface* newMaterial);
+
 	//	IDamageInterface
 	bool DamageActor() override;
 	void DamageActorReplicated_Implementation() override;
-
-	void UpdateGameWidget();
 
 protected:
 	virtual void BeginPlay() override;
@@ -70,7 +75,10 @@ protected:
 	float MovementSpeed = 400;
 
 private:
-
 	UMaterialInterface* DeadPlayerMaterial;
+	UMaterialInterface* RedPlayerMaterial;
+	UMaterialInterface* BluePlayerMaterial;
+	UMaterialInterface* YellowPlayerMaterial;
+	UMaterialInterface* GreenPlayerMaterial;
 
 };
