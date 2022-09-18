@@ -21,9 +21,6 @@ public:
 	UMainMenuWidget(const FObjectInitializer& obj);
 
 	UFUNCTION(BlueprintCallable)
-		void StartSingleGameSession(FName LevelName);
-
-	UFUNCTION(BlueprintCallable)
 		void CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName);
 
 	UFUNCTION(BlueprintCallable)

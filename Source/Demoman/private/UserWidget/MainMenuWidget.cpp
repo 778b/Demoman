@@ -11,6 +11,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/CSNetworkSubsystem.h"
+#include "Game/DemomanGameState.h"
 #include "UserWidget/SessionUserWidget.h"
 
 
@@ -19,14 +20,9 @@ UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& obj)
 {
 	if (!GetGameInstance()) return;
 	UCSNetworkSubsystem* NetworkSystem = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
-	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
+	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem"));
 
 	NetworkSystem->OnJoinSessionCompleteEvent.Add(FOnJoinSessionCompleteDelegate::CreateUObject(this, &UMainMenuWidget::OnCompleteJoinSession));
-}
-
-void UMainMenuWidget::StartSingleGameSession(FName LevelName)
-{
-	UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 }
 
 void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
@@ -34,7 +30,7 @@ void UMainMenuWidget::CreateGameSession(int32 NumPublicConnections, bool IsLAN, 
 	CreateSessionButton->SetIsEnabled(false);
 
 	UCSNetworkSubsystem* NetworkSystem = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
-	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
+	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem"));
 
 	SelectedGameLevel = LevelName;
 
@@ -47,7 +43,7 @@ void UMainMenuWidget::FindGameSessions(int32 MaxSearchResult, bool IsLAN)
 	UpdateSessionsButton->SetIsEnabled(false);
 
 	UCSNetworkSubsystem* NetworkSystem = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
-	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem")); // crashed
+	checkf(NetworkSystem, TEXT("MainMenu missed NetworkSystem"));
 
 	NetworkSystem->OnFindSessionsCompleteEvent.AddUObject(this, &UMainMenuWidget::OnCompleteSessionFinding);
 	NetworkSystem->FindSessions(MaxSearchResult, IsLAN);
