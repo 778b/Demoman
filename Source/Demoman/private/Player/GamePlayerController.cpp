@@ -43,7 +43,6 @@ void AGamePlayerController::BeginPlay()
 	{
 		SessionWidget = CreateWidget<USessionUserWidget>(this, GameLobbyWidgetClass);
 		checkf(SessionWidget, TEXT("GameController cant create session widget!"));
-
 		SessionWidget->AddToViewport(-1);
 
 		SetInputMode(FInputModeUIOnly());

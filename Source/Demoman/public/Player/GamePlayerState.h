@@ -4,21 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "DemomanUtils.h"
 #include "GamePlayerState.generated.h"
 
 class UPlayerUndecidedWidget;
+class UPlayerDecidedWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdatePlayerState);
 
-UENUM()
-enum EPlayerLobbyTeam
-{
-	Undecided,
-	Red,
-	Blue,
-	Green,
-	Yellow
-};
 
 UCLASS()
 class DEMOMAN_API AGamePlayerState : public APlayerState
@@ -53,7 +46,11 @@ public:
 	UPROPERTY(Replicated)
 		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;
 
+	UPROPERTY(Replicated)
+		TEnumAsByte<EPlayerLobbyRole> PlayerLobbyRole;
+
 	TSubclassOf<UPlayerUndecidedWidget> PlayerUndecidedWidgetClass;
+	TSubclassOf<UPlayerDecidedWidget> PlayerDecidedWidgetClass;
 
 	FOnUpdatePlayerState OnUpdatePlayerStateDelegate;
 

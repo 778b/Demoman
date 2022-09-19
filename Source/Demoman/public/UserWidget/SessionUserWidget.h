@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "OnlineSubsystemUtils.h"
-#include "Player/GamePlayerState.h"
+#include "DemomanUtils.h"
 #include "SessionUserWidget.generated.h"
 
 
@@ -30,9 +30,6 @@ class DEMOMAN_API USessionUserWidget : public UUserWidget
 public:
 	void NativeConstruct() override;
 
-	UFUNCTION(BlueprintCallable)
-		void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
-
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 		void OnStartGame();
 		void OnStartGame_Implementation();
@@ -49,7 +46,7 @@ public:
 	// Blueprint Implementatation of function SetupPlayersInLobby()
 	UFUNCTION(BlueprintCallable)
 		void UpdateWidgetSettings();
-		
+
 
 protected:
 	// Clearing all buttons and boxes 
@@ -69,33 +66,21 @@ public:
 		UTextBlock* SessionBlock;
 
 	FName PublicSessionName;
+	
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BStartGame;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BJoinUndecided;
 
-	// Cant refactor this to one massive
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UButton* BJoinRedColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UButton* BJoinBlueColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UButton* BJoinGreenColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UButton* BJoinYellowColor;
+		UButton* BAddDecidedSlot;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* NameRedColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* NameBlueColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* NameGreenColor;
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UTextBlock* NameYellowColor;
+		UScrollBox* DecidedScrollBox;
 
-	// We can use scrollbox, but anyway we got only 4 players
-	// Refactoring this in next update, when will add map for 4+ players 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UScrollBox* UndecidedScrollBox;
-
 };

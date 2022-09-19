@@ -52,6 +52,7 @@ void UMainMenuWidget::FindGameSessions(int32 MaxSearchResult, bool IsLAN)
 void UMainMenuWidget::OnCompleteSessionCreate(FName SessionName, bool result)
 {
 	CreateSessionButton->SetIsEnabled(true);
+	RemoveFromViewport();
 }
 
 void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)

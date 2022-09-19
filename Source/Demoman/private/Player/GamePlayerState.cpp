@@ -8,14 +8,24 @@
 #include "Player/GamePlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UserWidget/PlayerUndecidedWidget.h"
+#include "UserWidget/PlayerDecidedWidget.h"
 
 AGamePlayerState::AGamePlayerState()
 {
-	ConstructorHelpers::FClassFinder<UPlayerUndecidedWidget> WidgetClass(TEXT("/Game/Widgets/WD_PlayerUndecided"));
-	if (WidgetClass.Succeeded())
+	ConstructorHelpers::FClassFinder<UPlayerUndecidedWidget> UndecidedWidgetClass(TEXT("/Game/Widgets/WD_PlayerUndecided"));
+	if (UndecidedWidgetClass.Succeeded())
 	{
-		PlayerUndecidedWidgetClass = WidgetClass.Class;
+		PlayerUndecidedWidgetClass = UndecidedWidgetClass.Class;
 	}
+	ConstructorHelpers::FClassFinder<UPlayerDecidedWidget> DecidedWidgetClass(TEXT("/Game/Widgets/WD_PlayerDecided"));
+	if (DecidedWidgetClass.Succeeded())
+	{
+		PlayerDecidedWidgetClass = DecidedWidgetClass.Class;
+	}
+
+	ENetMode tempNetMode = GetNetMode();
+	if (tempNetMode == ENetMode::NM_Standalone || tempNetMode == ENetMode::NM_ListenServer) PlayerLobbyRole = Admin;
+
 }
 
 EPlayerLobbyTeam AGamePlayerState::GetPlayerLobbyState()

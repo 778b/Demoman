@@ -8,9 +8,11 @@
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UserWidget/PlayerUndecidedWidget.h"
+#include "UserWidget/PlayerDecidedWidget.h"
 #include "Game/CSNetworkSubsystem.h"
 #include "Game/DemomanGameState.h"
 #include "Player/GamePlayerController.h"
+#include "Player/GamePlayerState.h"
 #include "Player/PlayerCharacter.h"
 
 void USessionUserWidget::NativeConstruct()
@@ -32,26 +34,6 @@ void USessionUserWidget::NativeConstruct()
 	ConstructWidget();
 }
 
-void USessionUserWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
-{
-	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
-		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
-			GetGameInstance()->GetPrimaryPlayerUniqueId()));
-
-	// Player press button before join 
-	if (!tempPlayerState) return;
-
-	tempPlayerState->SetPlayerLobbyState(SelectedLobby);
-	SetupPlayersInLobby();
-
-	if (SelectedLobby != Undecided) BJoinUndecided->SetVisibility(ESlateVisibility::Visible);
-	else BJoinUndecided->SetVisibility(ESlateVisibility::Hidden);
-
-	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
-	checkf(tempState, TEXT("SessionWidget missed GameState"));
-	tempState->UpdateLobbyWidget();
-}
-
 void USessionUserWidget::OnStartGame_Implementation()
 {
 	// Check all player states
@@ -70,6 +52,7 @@ void USessionUserWidget::OnStartGame_Implementation()
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
 	NetworkSys->StartSession(PublicSessionName);
 }
+
 
 void USessionUserWidget::DrawDebugPlayers()
 {
@@ -99,32 +82,20 @@ void USessionUserWidget::SetupPlayersInLobby()
 		switch (CastedState->GetPlayerLobbyState())
 		{
 		case Undecided:
-		{
-			UPlayerUndecidedWidget* tempWidget = CreateWidget<UPlayerUndecidedWidget>(GetOwningPlayer(), CastedState->PlayerUndecidedWidgetClass);
-			tempWidget->PlayerName->SetText(FText::FromString(tempPlayer->GetPlayerName()));
-			UndecidedScrollBox->AddChild(tempWidget);
-		}
-			break;
-		case Red:
-			BJoinRedColor->SetVisibility(ESlateVisibility::Collapsed);
-			NameRedColor->SetText(FText::FromString(CastedState->GetPlayerName()));
-			NameRedColor->SetVisibility(ESlateVisibility::Visible);
-			break;
-		case Blue:
-			BJoinBlueColor->SetVisibility(ESlateVisibility::Collapsed);
-			NameBlueColor->SetText(FText::FromString(CastedState->GetPlayerName()));
-			NameBlueColor->SetVisibility(ESlateVisibility::Visible);
-			break;
-		case Green:
-			BJoinGreenColor->SetVisibility(ESlateVisibility::Collapsed);
-			NameGreenColor->SetText(FText::FromString(CastedState->GetPlayerName()));
-			NameGreenColor->SetVisibility(ESlateVisibility::Visible);
-			break;
-		case Yellow:
-			BJoinYellowColor->SetVisibility(ESlateVisibility::Collapsed);
-			NameYellowColor->SetText(FText::FromString(CastedState->GetPlayerName()));
-			NameYellowColor->SetVisibility(ESlateVisibility::Visible);
-			break;
+			{
+				// Local namespace for allowing create widget
+				UPlayerUndecidedWidget* tempWidget = CreateWidget<UPlayerUndecidedWidget>(GetOwningPlayer(), CastedState->PlayerUndecidedWidgetClass);
+				tempWidget->PlayerName->SetText(FText::FromString(tempPlayer->GetPlayerName()));
+				UndecidedScrollBox->AddChild(tempWidget);
+				break;
+			}
+		default:
+			{
+				UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
+				tempWidget->SetupSettings(CastedState);
+				DecidedScrollBox->AddChild(tempWidget);
+				break;
+			}
 		}
 	}
 }
@@ -132,16 +103,7 @@ void USessionUserWidget::SetupPlayersInLobby()
 void USessionUserWidget::SetupDefaultSettings()
 {
 	UndecidedScrollBox->ClearChildren();
-
-	NameYellowColor->SetVisibility(ESlateVisibility::Collapsed);
-	NameGreenColor->SetVisibility(ESlateVisibility::Collapsed);
-	NameBlueColor->SetVisibility(ESlateVisibility::Collapsed);
-	NameRedColor->SetVisibility(ESlateVisibility::Collapsed);
-
-	BJoinGreenColor->SetVisibility(ESlateVisibility::Visible);
-	BJoinYellowColor->SetVisibility(ESlateVisibility::Visible);
-	BJoinBlueColor->SetVisibility(ESlateVisibility::Visible);
-	BJoinRedColor->SetVisibility(ESlateVisibility::Visible);
+	DecidedScrollBox->ClearChildren();
 }
 
 void USessionUserWidget::UpdateWidgetSettings()
