@@ -75,8 +75,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BJoinUndecided;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		UButton* BAddDecidedSlot;
+	//UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	//	UButton* BAddDecidedSlot;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UScrollBox* DecidedScrollBox;

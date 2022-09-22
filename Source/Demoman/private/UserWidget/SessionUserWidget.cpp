@@ -17,7 +17,6 @@
 
 void USessionUserWidget::NativeConstruct()
 {
-	
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
 	PublicSessionName = NetworkSys->LastSessionName;
@@ -27,6 +26,19 @@ void USessionUserWidget::NativeConstruct()
 
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
+
+	if (AGamePlayerState* tempPlayerState = GetOwningPlayerState<AGamePlayerState>())
+	{
+		if (tempPlayerState->PlayerLobbyRole == Admin)
+		{
+			BStartGame->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			BStartGame->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+	
 
 	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 	tempState->UpdateLobbyWidget();
