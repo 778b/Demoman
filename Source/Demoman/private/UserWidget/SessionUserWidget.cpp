@@ -27,7 +27,7 @@ void USessionUserWidget::NativeConstruct()
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
 
-	if (AGamePlayerState* tempPlayerState = GetOwningPlayerState<AGamePlayerState>())
+	if (const AGamePlayerState* tempPlayerState = GetOwningPlayerState<AGamePlayerState>())
 	{
 		if (tempPlayerState->PlayerLobbyRole == Admin)
 		{
@@ -87,6 +87,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 {
 	SetupDefaultSettings();
 
+	int32 DecidedPlayersCount = 0;
+
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
@@ -106,16 +108,35 @@ void USessionUserWidget::SetupPlayersInLobby()
 				UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
 				tempWidget->SetupSettings(CastedState);
 				DecidedScrollBox->AddChild(tempWidget);
+				++DecidedPlayersCount;
 				break;
 			}
 		}
+	}
+
+	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
+
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
+	checkf(SessionPtr.IsValid(), TEXT("SessionWidget missed SEssionPtr"));
+
+	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
+	checkf(TempSessionSettings, TEXT("SessionWidget missed SessionSettings"));
+
+
+	for (int32 i = DecidedPlayersCount; i < TempSessionSettings->NumPublicConnections; ++i)
+	{
+		UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), UPlayerDecidedWidget::StaticClass());
+		DecidedScrollBox->AddChild(tempWidget);
 	}
 }
 
 void USessionUserWidget::SetupDefaultSettings()
 {
 	UndecidedScrollBox->ClearChildren();
+
 	DecidedScrollBox->ClearChildren();
+	
 }
 
 void USessionUserWidget::UpdateWidgetSettings()
