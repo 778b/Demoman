@@ -50,8 +50,8 @@ public:
 	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyColor;
 
 private:
-	FSlateColor BlueColor	= FLinearColor(0.f, 0.f, 1.f, 1.f);
-	FSlateColor RedColor	= FLinearColor(1.f, 0.f, 0.f, 1.f);
-	FSlateColor YellowColor = FLinearColor(1.f, 0.8, 0.f, 1.f);
-	FSlateColor GreenColor	= FLinearColor(0.f, 0.7f, 0.f, 1.f);
+	const FSlateColor BlueColor	= FLinearColor(0.f, 0.f, 1.f, 1.f);
+	const FSlateColor RedColor	= FLinearColor(1.f, 0.f, 0.f, 1.f);
+	const FSlateColor YellowColor = FLinearColor(1.f, 0.8, 0.f, 1.f);
+	const FSlateColor GreenColor	= FLinearColor(0.f, 0.7f, 0.f, 1.f);
 };

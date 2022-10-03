@@ -11,7 +11,26 @@
 
 void UPlayerDecidedWidget::NativeConstruct()
 {
-	switch(PlayerLobbyColor)
+	NameSlot->SetVisibility(ESlateVisibility::Collapsed);
+	BAddBotToSlot->SetVisibility(ESlateVisibility::Collapsed);
+	BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player)
+{
+	if (Player == nullptr)
+	{
+		ColorSlot->SetVisibility(ESlateVisibility::Visible);
+		BJoinSlot->SetVisibility(ESlateVisibility::Visible);
+
+		if (PlayerLobbyColor == Admin)
+		{
+			BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
+		}
+		return;
+	}
+
+	switch (Player->PlayerLobbyState)
 	{
 	case EPlayerLobbyTeam::Undecided:
 		break;
@@ -29,14 +48,8 @@ void UPlayerDecidedWidget::NativeConstruct()
 		break;
 	}
 
-
-}
-
-void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player)
-{
-	if (Player->PlayerLobbyRole == Admin)
+	if (PlayerLobbyColor == Admin)
 	{
-		BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
 		BKickSlot->SetVisibility(ESlateVisibility::Visible);
 	}
 }
