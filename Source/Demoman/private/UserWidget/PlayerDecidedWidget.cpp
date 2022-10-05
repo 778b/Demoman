@@ -16,14 +16,14 @@ void UPlayerDecidedWidget::NativeConstruct()
 	BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player)
+void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole)
 {
 	if (Player == nullptr)
 	{
 		ColorSlot->SetVisibility(ESlateVisibility::Visible);
 		BJoinSlot->SetVisibility(ESlateVisibility::Visible);
 
-		if (PlayerLobbyColor == Admin)
+		if (OwnerRole == Admin)
 		{
 			BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
 		}

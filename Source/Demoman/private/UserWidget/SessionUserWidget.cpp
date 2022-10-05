@@ -87,9 +87,10 @@ void USessionUserWidget::SetupPlayersInLobby()
 {
 	SetupDefaultSettings();
 
-	AGamePlayerState* OwnerPlayerState = GetOwningPlayer()->GetPlayerState<AGamePlayerState>();
+	// GetOwningPlayer()->GetPlayerState<AGamePlayerState>(); Clients Widget attached to viewport, but should to controller
+	AGamePlayerState* OwnerPlayerState = GetWorld()->GetFirstPlayerController()->GetPlayerState<AGamePlayerState>(); 
 	checkf(OwnerPlayerState, TEXT("SessionWidget missed OwnerPlayerState"));
-
+	
 	int32 DecidedPlayersCount = 0;
 
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
@@ -109,8 +110,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 		default:
 			{
 				UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
-				tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
-				tempWidget->SetupSettings(CastedState);
+				//tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
+				tempWidget->SetupSettings(CastedState, OwnerPlayerState->PlayerLobbyRole);
 				DecidedScrollBox->AddChild(tempWidget);
 				++DecidedPlayersCount;
 				break;
@@ -131,8 +132,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 	{
 		UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
 		checkf(tempWidget, TEXT("SessionWidget missed slots"));
-		tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
-		tempWidget->SetupSettings(nullptr);
+		//tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
+		tempWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
 		DecidedScrollBox->AddChild(tempWidget);
 	}
 }

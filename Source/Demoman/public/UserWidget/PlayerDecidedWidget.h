@@ -21,7 +21,7 @@ public:
 	virtual void NativeConstruct() override;
 
 	void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
-	void SetupSettings(AGamePlayerState* Player);
+	void SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole);
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 		void AddBotToGame();
