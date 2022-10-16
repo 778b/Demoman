@@ -31,6 +31,13 @@ public:
 		void RemovePlayerFromGame();
 		void RemovePlayerFromGame_Implementation();
 
+	UFUNCTION()
+		void OnClickedJoinButton();
+	UFUNCTION()
+		void OnClickedKickButton();
+	UFUNCTION()
+		void OnClickedAddBotButton();
+
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		UImage* ColorSlot;
@@ -49,9 +56,16 @@ public:
 
 	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyColor;
 
+	static uint8 NextSlotColor;
+
 private:
-	const FSlateColor BlueColor	= FLinearColor(0.f, 0.f, 1.f, 1.f);
-	const FSlateColor RedColor	= FLinearColor(1.f, 0.f, 0.f, 1.f);
-	const FSlateColor YellowColor = FLinearColor(1.f, 0.8, 0.f, 1.f);
-	const FSlateColor GreenColor	= FLinearColor(0.f, 0.7f, 0.f, 1.f);
+
+	const FSlateColor SlotColors[4]{	FLinearColor(1.f, 0.f, 0.f, 1.f),		// Red
+										FLinearColor(0.f, 0.f, 1.f, 1.f),		// Blue
+										FLinearColor(0.f, 0.7f, 0.f, 1.f), 		// Green
+										FLinearColor(1.f, 0.8, 0.f, 1.f) };		// Yellow
+
 };
+
+
+uint8 UPlayerDecidedWidget::NextSlotColor = 0;

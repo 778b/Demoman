@@ -87,10 +87,12 @@ void USessionUserWidget::SetupPlayersInLobby()
 {
 	SetupDefaultSettings();
 
-	// GetOwningPlayer()->GetPlayerState<AGamePlayerState>(); Clients Widget attached to viewport, but should to controller
-	AGamePlayerState* OwnerPlayerState = GetWorld()->GetFirstPlayerController()->GetPlayerState<AGamePlayerState>(); 
+	AGamePlayerState* OwnerPlayerState = Cast<AGamePlayerState>(
+		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+			GetGameInstance()->GetPrimaryPlayerUniqueId()));
 	checkf(OwnerPlayerState, TEXT("SessionWidget missed OwnerPlayerState"));
-	
+	if (!OwnerPlayerState) return;
+
 	int32 DecidedPlayersCount = 0;
 
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
