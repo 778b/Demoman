@@ -57,6 +57,11 @@ protected:
 	virtual void OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer);
 	virtual void OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting);
 
+	virtual void OnOwnerChangedTeam(EPlayerLobbyTeam NewPlayerTeam);
+
+	UFUNCTION()
+		virtual void OnClickedUndecidedButton();
+
 public:
 	TArray<FPlayerLobbyState> LobbyPlayers;
 

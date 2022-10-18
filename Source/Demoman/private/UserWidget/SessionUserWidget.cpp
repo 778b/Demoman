@@ -38,7 +38,8 @@ void USessionUserWidget::NativeConstruct()
 			BStartGame->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
-	
+
+	BJoinUndecided->OnClicked.AddDynamic(this, &USessionUserWidget::OnClickedUndecidedButton);
 
 	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 	tempState->UpdateLobbyWidget();
@@ -53,7 +54,7 @@ void USessionUserWidget::OnStartGame_Implementation()
 	{
 		AGamePlayerState* CastedPlayerState = Cast<AGamePlayerState>(tempPlayer);
 		checkf(CastedPlayerState, TEXT("SessionWidget cant get GamePlayerState"));
-		if (CastedPlayerState->PlayerLobbyState == Undecided) return;
+		if (CastedPlayerState->GetPlayerLobbyState() == Undecided) return;
 	}
 	
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
@@ -72,7 +73,7 @@ void USessionUserWidget::DrawDebugPlayers()
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
-		FString TempString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->PlayerLobbyState);
+		FString TempString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->GetPlayerLobbyState());
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TempString);
 	}
 #endif
@@ -87,6 +88,7 @@ void USessionUserWidget::SetupPlayersInLobby()
 {
 	SetupDefaultSettings();
 
+	// Getting TRUE local player for our client
 	AGamePlayerState* OwnerPlayerState = Cast<AGamePlayerState>(
 		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
 			GetGameInstance()->GetPrimaryPlayerUniqueId()));
@@ -94,30 +96,28 @@ void USessionUserWidget::SetupPlayersInLobby()
 	if (!OwnerPlayerState) return;
 
 	int32 DecidedPlayersCount = 0;
+	// Nulling static var of colors of decided widgets
+	UPlayerDecidedWidget::CurrentColors = Undecided;
 
+	// Creating widget to Decided and Undedcided players
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
 
-		switch (CastedState->GetPlayerLobbyState())
+		if (CastedState->GetPlayerLobbyState() == Undecided)
 		{
-		case Undecided:
-			{
-				// Local namespace for allowing create widget
-				UPlayerUndecidedWidget* tempWidget = CreateWidget<UPlayerUndecidedWidget>(GetOwningPlayer(), CastedState->PlayerUndecidedWidgetClass);
-				tempWidget->PlayerName->SetText(FText::FromString(tempPlayer->GetPlayerName()));
-				UndecidedScrollBox->AddChild(tempWidget);
-				break;
-			}
-		default:
-			{
-				UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
-				//tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
-				tempWidget->SetupSettings(CastedState, OwnerPlayerState->PlayerLobbyRole);
-				DecidedScrollBox->AddChild(tempWidget);
-				++DecidedPlayersCount;
-				break;
-			}
+			// Local namespace for allowing create widget
+			UPlayerUndecidedWidget* tempWidget = CreateWidget<UPlayerUndecidedWidget>(GetOwningPlayer(), CastedState->PlayerUndecidedWidgetClass);
+			tempWidget->PlayerName->SetText(FText::FromString(tempPlayer->GetPlayerName()));
+			UndecidedScrollBox->AddChild(tempWidget);
+		}
+		else
+		{
+			UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
+			tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
+			tempWidget->SetupSettings(CastedState, OwnerPlayerState->PlayerLobbyRole);
+			DecidedScrollBox->AddChild(tempWidget);
+			++DecidedPlayersCount;
 		}
 	}
 
@@ -130,11 +130,13 @@ void USessionUserWidget::SetupPlayersInLobby()
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	checkf(TempSessionSettings, TEXT("SessionWidget missed SessionSettings"));
 
+
+	// Creating empty decided slot widget
 	for (int32 i = DecidedPlayersCount; i < TempSessionSettings->NumPublicConnections; ++i)
 	{
 		UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
 		checkf(tempWidget, TEXT("SessionWidget missed slots"));
-		//tempWidget->PlayerLobbyColor = OwnerPlayerState->PlayerLobbyState;
+		tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
 		tempWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
 		DecidedScrollBox->AddChild(tempWidget);
 	}
@@ -161,4 +163,31 @@ void USessionUserWidget::OnPostLoginEvent(AGameModeBase* GameMode, APlayerContro
 void USessionUserWidget::OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting)
 {
 	SetupPlayersInLobby();
+}
+
+void USessionUserWidget::OnOwnerChangedTeam(EPlayerLobbyTeam NewPlayerTeam)
+{
+	if (NewPlayerTeam != Undecided)
+	{
+		BJoinUndecided->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		BJoinUndecided->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void USessionUserWidget::OnClickedUndecidedButton()
+{
+	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
+		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+			GetGameInstance()->GetPrimaryPlayerUniqueId()));
+
+	tempPlayerState->SetPlayerLobbyState(Undecided);
+	OnOwnerChangedTeam(Undecided);
+
+	// Local update widget
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->UpdateLobbyWidget();
 }

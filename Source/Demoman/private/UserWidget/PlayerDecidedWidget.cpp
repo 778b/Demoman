@@ -25,64 +25,46 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 	// Slot is empty
 	if (Player == nullptr)
 	{
-		PlayerLobbyColor = Undecided;
-		if(NextSlotColor > 3)
+		// Getting first free color
+		for (int8 i = 0; i < 4; ++i)
 		{
-			NextSlotColor = 0;
-		}
-		ColorSlot->SetBrushTintColor(SlotColors[NextSlotColor]);
+			if (CurrentColors & (1 << i)) continue;
 
+			CurrentColors = (EPlayerLobbyTeam)(CurrentColors | 1 << i);
+			PlayerLobbyColor = (EPlayerLobbyTeam)(1 << i);
+			ColorSlot->SetBrushTintColor(SlotColors[i]);
+			break;
+		}
 		ColorSlot->SetVisibility(ESlateVisibility::Visible);
 		BJoinSlot->SetVisibility(ESlateVisibility::Visible);
-
-		switch (NextSlotColor)
-		{
-		case 0:
-			PlayerLobbyColor = Red;
-			break;
-		case 1:
-			PlayerLobbyColor = Blue;
-			break;
-		case 2:
-			PlayerLobbyColor = Green;
-			break;
-		case 3:
-			PlayerLobbyColor = Yellow;
-			break;
-		}
 	}
 	// Slot containing the player
 	else
 	{
-		switch (Player->PlayerLobbyState)
+		switch (Player->GetPlayerLobbyState())
 		{
 		case EPlayerLobbyTeam::Undecided:
 			break;
 		case EPlayerLobbyTeam::Red:
 			ColorSlot->SetBrushTintColor(SlotColors[0]);
+			CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Red);
 			break;
 		case EPlayerLobbyTeam::Blue:
 			ColorSlot->SetBrushTintColor(SlotColors[1]);
-			break;
-		case EPlayerLobbyTeam::Yellow:
-			ColorSlot->SetBrushTintColor(SlotColors[2]);
+			CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Blue);
 			break;
 		case EPlayerLobbyTeam::Green:
+			ColorSlot->SetBrushTintColor(SlotColors[2]);
+			CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Green);
+			break;
+		case EPlayerLobbyTeam::Yellow:
 			ColorSlot->SetBrushTintColor(SlotColors[3]);
+			CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Yellow);
 			break;
 		}
 		BJoinSlot->SetVisibility(ESlateVisibility::Collapsed);
 		NameSlot->SetText(FText::FromString(Player->GetPlayerName()));
 		NameSlot->SetVisibility(ESlateVisibility::Visible);
-
-		// @todo delete
-		FString OutputString = NameSlot->GetText().ToString() + " " + FString::FromInt((int32)NameSlot->GetVisibility());
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, OutputString);
-		}
-		// end delete @todo
-
 
 		if (OwnerRole == Admin)
 		{
@@ -90,10 +72,6 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 			BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
-
-	
-
-	NextSlotColor++;
 }
 
 void UPlayerDecidedWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
@@ -107,13 +85,6 @@ void UPlayerDecidedWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	if (!tempPlayerState) return;
 
 	tempPlayerState->SetPlayerLobbyState(SelectedLobby);
-	// SetupPlayersInLobby();
-
-	//if (SelectedLobby != Undecided)
-	//NameSlot->SetText(FText::FromString(tempPlayerState->GetPlayerName()));
-	//NameSlot->SetVisibility(ESlateVisibility::Visible);
-	//BJoinSlot->SetVisibility(ESlateVisibility::Collapsed);
-	//else BJoinSlot->SetVisibility(ESlateVisibility::Hidden);
 
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
@@ -131,6 +102,7 @@ void UPlayerDecidedWidget::RemovePlayerFromGame_Implementation()
 void UPlayerDecidedWidget::OnClickedJoinButton()
 {
 	OnJoinTeam(PlayerLobbyColor);
+	FOnChangeTeamDelegate.ExecuteIfBound(PlayerLobbyColor);
 }
 
 void UPlayerDecidedWidget::OnClickedKickButton()

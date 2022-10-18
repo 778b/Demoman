@@ -110,7 +110,7 @@ void ABaseCharacter::Death_Implementation()
 void ABaseCharacter::SetAutoTeamMaterial_Implementation()
 {
 	AGamePlayerState* OurState = GetPlayerState<AGamePlayerState>();
-	switch (OurState->PlayerLobbyState)
+	switch (OurState->GetPlayerLobbyState())
 	{
 	case EPlayerLobbyTeam::Red:
 		PlayerModel->SetMaterial(0, RedPlayerMaterial);

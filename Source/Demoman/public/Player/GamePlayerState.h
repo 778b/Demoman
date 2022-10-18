@@ -43,8 +43,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	UPROPERTY(Replicated)
-		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;
+
 
 	UPROPERTY(Replicated)
 		TEnumAsByte<EPlayerLobbyRole> PlayerLobbyRole;
@@ -54,4 +53,7 @@ public:
 
 	FOnUpdatePlayerState OnUpdatePlayerStateDelegate;
 
+protected:
+	UPROPERTY(Replicated)
+		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;
 };

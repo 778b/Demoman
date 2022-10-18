@@ -7,6 +7,8 @@
 #include "DemomanUtils.h"
 #include "PlayerDecidedWidget.generated.h"
 
+DECLARE_DELEGATE_OneParam(OnChangeTeam, EPlayerLobbyTeam /*NewPlayerTeam*/)
+
 class UImage;
 class UButton;
 class UTextBlock;
@@ -54,9 +56,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UTextBlock* NameSlot;
 
+	OnChangeTeam FOnChangeTeamDelegate;
+
 	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyColor;
 
-	static uint8 NextSlotColor;
+	static EPlayerLobbyTeam CurrentColors;
 
 private:
 
@@ -67,5 +71,4 @@ private:
 
 };
 
-
-uint8 UPlayerDecidedWidget::NextSlotColor = 0;
+EPlayerLobbyTeam UPlayerDecidedWidget::CurrentColors = Undecided;
