@@ -15,6 +15,7 @@ UCSNetworkSubsystem::UCSNetworkSubsystem()
 	OnCreateSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnCreateSessionCompleted);
 	OnFindSessionsCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnFindSessionsCompleted);
 	OnStartSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnStartSessionCompleted);
+	OnDestroySessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnDestroySessionCompleted);
 }
 
 /*
@@ -49,6 +50,18 @@ void UCSNetworkSubsystem::StartSession(FName SessionName)
 	}
 	SessionPtr->AddOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegate);
 	SessionPtr->StartSession(SessionName);
+}
+
+void UCSNetworkSubsystem::DestroySession(FName SessionName)
+{
+	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
+	if (!SessionPtr.IsValid())
+	{
+		OnDestroySessionCompleteEvent.Broadcast(SessionName, false);
+		return;
+	}
+	SessionPtr->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
+	SessionPtr->DestroySession(SessionName);
 }
 
 void UCSNetworkSubsystem::CreateSession(int32 NumPublicConnections, bool IsLAN, FString SessionName, FName LevelName)
@@ -134,6 +147,11 @@ void UCSNetworkSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessi
 void UCSNetworkSubsystem::OnStartSessionCompleted(FName SessionName, bool Success)
 {
 	OnStartSessionCompleteEvent.Broadcast(SessionName, Success);
+}
+
+void UCSNetworkSubsystem::OnDestroySessionCompleted(FName SessionName, bool Success)
+{
+	OnDestroySessionCompleteEvent.Broadcast(SessionName, Success);
 }
 
 void UCSNetworkSubsystem::OnCreateSessionCompleted(FName SessionName, bool Success)

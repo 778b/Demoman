@@ -66,6 +66,14 @@ void USessionUserWidget::OnStartGame_Implementation()
 	NetworkSys->StartSession(PublicSessionName);
 }
 
+void USessionUserWidget::OnLeaveGame()
+{
+	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
+	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
+
+	NetworkSys->DestroySession(PublicSessionName);
+}
+
 
 void USessionUserWidget::DrawDebugPlayers()
 {
@@ -190,4 +198,12 @@ void USessionUserWidget::OnClickedUndecidedButton()
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
 	tempState->UpdateLobbyWidget();
+}
+
+void USessionUserWidget::OnClickedLeaveButton()
+{
+}
+
+void USessionUserWidget::OnClickedStartButton()
+{
 }

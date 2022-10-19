@@ -35,6 +35,9 @@ public:
 		void OnStartGame_Implementation();
 
 	UFUNCTION(BlueprintCallable)
+		void OnLeaveGame();
+
+	UFUNCTION(BlueprintCallable)
 		void DrawDebugPlayers();
 	UFUNCTION(BlueprintCallable)
 		FName GetRoomName();
@@ -62,6 +65,12 @@ protected:
 	UFUNCTION()
 		virtual void OnClickedUndecidedButton();
 
+	UFUNCTION()
+		virtual void OnClickedLeaveButton();
+
+	UFUNCTION()
+		virtual void OnClickedStartButton();
+
 public:
 	TArray<FPlayerLobbyState> LobbyPlayers;
 
@@ -76,6 +85,9 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BStartGame;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		UButton* BLeaveGame;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		UButton* BJoinUndecided;

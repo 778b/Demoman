@@ -10,6 +10,7 @@
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnJoinSessionComplete, FName, EOnJoinSessionCompleteResult::Type Result);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnStartSessionComplete, FName, bool);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnDestroySessionComplete, FName, bool);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FNSOnCreateSessionComplete, FName, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FNSOnFindSessionsComplete, bool);
 
@@ -41,6 +42,13 @@ public:
 	 *	Broadcasting in OnStartSessionCompleteEvent
 	 */
 	void StartSession(FName SessionName);
+
+	/**
+	 *	Destory Session simple function
+	 *	@param SessionName the name can taken from LastSessionName
+	 *	Broadcasting in OnDestroySessionCompleteEvent
+	 */
+	void DestroySession(FName SessionName);
 
 	/**
 	 *	Create Session simple function
@@ -77,6 +85,12 @@ protected:
 	virtual void OnStartSessionCompleted(FName SessionName, bool Success);
 
 	/**
+	 *	Executed on complete destroy session
+	 *	Executing OnDestroySessionCompleteEvent
+	 */
+	virtual void OnDestroySessionCompleted(FName SessionName, bool Success);
+
+	/**
 	 *	Executed on complete session create
 	 *	Executing OnCreateSessionCompleteEvent
 	 */
@@ -102,6 +116,13 @@ public:
 	 *	@param bool Result
 	 */
 	FNSOnCreateSessionComplete	OnCreateSessionCompleteEvent;
+
+	/**
+	 *	Multicast delegate, broadcasting when destroy session complete
+	 *	@param FName SessionName
+	 *	@param bool Result
+	 */
+	FNSOnDestroySessionComplete OnDestroySessionCompleteEvent;
 
 	/**
 	 *	Multicast delegate, broadcasting when find sessions complete
@@ -135,4 +156,6 @@ private:
 	// private Delegate which executing OnFindSessionsCompleteEvent
 	FOnFindSessionsCompleteDelegate		OnFindSessionsCompleteDelegate;
 
+	// private Delegate which executing OnDestroySessionCompleteEvent
+	FOnDestroySessionCompleteDelegate	OnDestroySessionCompleteDelegate;
 };
