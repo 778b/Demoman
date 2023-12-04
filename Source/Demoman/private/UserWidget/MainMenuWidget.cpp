@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Game/CSNetworkSubsystem.h"
 #include "Game/DemomanGameState.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "UserWidget/SessionUserWidget.h"
 
 
@@ -52,7 +53,7 @@ void UMainMenuWidget::FindGameSessions(int32 MaxSearchResult, bool IsLAN)
 void UMainMenuWidget::OnCompleteSessionCreate(FName SessionName, bool result)
 {
 	CreateSessionButton->SetIsEnabled(true);
-	RemoveFromViewport();
+	RemoveFromParent();
 }
 
 void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)
@@ -84,5 +85,5 @@ void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)
 
 void UMainMenuWidget::OnCompleteJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	RemoveFromViewport();
+	RemoveFromParent();
 }

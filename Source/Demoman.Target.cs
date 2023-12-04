@@ -8,7 +8,6 @@ public class DemomanTarget : TargetRules
 	public DemomanTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "Demoman" } );
+        ExtraModuleNames.AddRange( new string[] { "Demoman" } );
 	}
 }

@@ -8,7 +8,6 @@ public class DemomanEditorTarget : TargetRules
 	public DemomanEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "Demoman" } );
+        ExtraModuleNames.AddRange( new string[] { "Demoman" } );
 	}
 }

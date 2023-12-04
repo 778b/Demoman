@@ -103,17 +103,15 @@ void ABomb::DamageInDirection_Implementation(const FVector Direction, const TArr
 	if (isHitted)
 	{
 		//DrawDebugPoint(GetWorld(), hit.Location, 25.f, FColor::Red, false, 3.5f);
-
-		FVector targetLocation = hit.Actor->GetActorLocation();
-		IDamageInterface* tempActor = Cast<IDamageInterface>(hit.Actor.Get());
-		if (tempActor)
+		auto tempActor = hit.GetActor();
+		if (IDamageInterface* tempInterface = Cast<IDamageInterface>(tempActor))
 		{
-			if (tempActor->DamageActor())
+			if (tempInterface->DamageActor())
 			{
 				return DamageInDirection(Direction, ignoreActorsAndSelf);
 			}
 		}
-		if (hit.Actor.IsValid())
+		if (IsValid(tempActor))
 		{
 			if (FVector::Distance(hit.Location, GetActorLocation()) > 100)
 			{
@@ -124,14 +122,10 @@ void ABomb::DamageInDirection_Implementation(const FVector Direction, const TArr
 			}
 			return;
 		}
-		else
-		{
-			ShowParticle(targetLocation);
-			return;
-		}
+		ShowParticle(tempActor->GetActorLocation());
+		return;
 	}
 	ShowParticle(endTrace);
-	return;
 }
 
 void ABomb::ShowParticle_Implementation(FVector End)

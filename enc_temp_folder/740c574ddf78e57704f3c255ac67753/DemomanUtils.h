@@ -7,11 +7,11 @@
 UENUM()
 enum EPlayerLobbyTeam
 {
-	Undecided	= 0,
-	Red			= 1,
-	Blue		= 2,
-	Green		= 3,
-	Yellow		= 4,
+	Undecided	= 0b0000,
+	Red			= 0b0001,
+	Blue		= 0b0010,
+	Green		= 0b0100,
+	Yellow		= 0b1000,
 };
 
 UENUM()

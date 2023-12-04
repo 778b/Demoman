@@ -82,6 +82,7 @@ void USessionUserWidget::DrawDebugPlayers()
 	{
 		AGamePlayerState* CastedState = Cast<AGamePlayerState>(tempPlayer);
 		FString TempString = CastedState->GetPlayerName() + " " + FString::FromInt(CastedState->GetPlayerLobbyState());
+
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TempString);
 	}
 #endif
@@ -107,6 +108,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 	// Nulling static var of colors of decided widgets
 	UPlayerDecidedWidget::CurrentColors = Undecided;
 
+	TArray<UPlayerDecidedWidget*> DecidedUnsorted;
+
 	// Creating widget to Decided and Undedcided players
 	for (APlayerState* tempPlayer : GetOwningPlayer()->GetWorld()->GetGameState()->PlayerArray)
 	{
@@ -124,7 +127,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 			UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), CastedState->PlayerDecidedWidgetClass);
 			tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
 			tempWidget->SetupSettings(CastedState, OwnerPlayerState->PlayerLobbyRole);
-			DecidedScrollBox->AddChild(tempWidget);
+			DecidedUnsorted.Add(tempWidget);
+			//DecidedScrollBox->AddChild(tempWidget);
 			++DecidedPlayersCount;
 		}
 	}
@@ -146,8 +150,16 @@ void USessionUserWidget::SetupPlayersInLobby()
 		checkf(tempWidget, TEXT("SessionWidget missed slots"));
 		tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
 		tempWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
-		DecidedScrollBox->AddChild(tempWidget);
+		DecidedUnsorted.Add(tempWidget);
+		//DecidedScrollBox->AddChild(tempWidget);
 	}
+
+	// Sort decided players
+	for (UPlayerDecidedWidget* tempDecided : DecidedUnsorted)
+	{
+		//tempDecided->
+	}
+	//DecidedScrollBox->Get
 }
 
 void USessionUserWidget::SetupDefaultSettings()
