@@ -62,6 +62,7 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Yellow);
 			break;
 		}
+		PlayerLobbyColor = Player->GetPlayerLobbyState();
 		BJoinSlot->SetVisibility(ESlateVisibility::Collapsed);
 		NameSlot->SetText(FText::FromString(Player->GetPlayerName()));
 		NameSlot->SetVisibility(ESlateVisibility::Visible);
