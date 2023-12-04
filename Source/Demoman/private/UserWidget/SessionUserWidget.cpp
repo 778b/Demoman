@@ -142,8 +142,8 @@ void USessionUserWidget::SetupPlayersInLobby()
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	checkf(TempSessionSettings, TEXT("SessionWidget missed SessionSettings"));
 
-
-	// Creating empty decided slot widget
+	/*
+	// Creating empty decided slot widget with current players
 	for (int32 i = DecidedPlayersCount; i < TempSessionSettings->NumPublicConnections; ++i)
 	{
 		UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
@@ -151,15 +151,32 @@ void USessionUserWidget::SetupPlayersInLobby()
 		tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
 		tempWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
 		DecidedUnsorted.Add(tempWidget);
-		//DecidedScrollBox->AddChild(tempWidget);
 	}
+	*/
 
 	// Sort decided players
-	for (UPlayerDecidedWidget* tempDecided : DecidedUnsorted)
+	for (int32 i = 1; i < EPlayerLobbyTeam::Max; ++i)
 	{
-		//tempDecided->
+		bool bIsFound = false;
+		for (UPlayerDecidedWidget* tempDecided : DecidedUnsorted)
+		{
+			if (tempDecided->PlayerLobbyColor.GetIntValue() == i) {
+				bIsFound = true;
+
+				DecidedScrollBox->AddChild(tempDecided);
+				break;
+			}
+		}
+		if (bIsFound) continue;
+
+		const auto tempEmptyWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
+		tempEmptyWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
+		// @todo rework with setter and getters
+		tempEmptyWidget->PlayerLobbyColor = static_cast<EPlayerLobbyTeam>(i);
+		tempEmptyWidget->UpdateColor();
+		//
+		DecidedScrollBox->AddChild(tempEmptyWidget);
 	}
-	//DecidedScrollBox->Get
 }
 
 void USessionUserWidget::SetupDefaultSettings()

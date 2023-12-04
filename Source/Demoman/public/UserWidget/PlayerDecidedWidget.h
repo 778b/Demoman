@@ -24,6 +24,7 @@ public:
 
 	void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
 	void SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole);
+	const void UpdateColor();
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 		void AddBotToGame();

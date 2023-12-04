@@ -12,6 +12,8 @@ enum EPlayerLobbyTeam
 	Blue		= 2,
 	Green		= 3,
 	Yellow		= 4,
+
+	Max			= 5		// Current max player count @todo must be in game mode settings
 };
 
 UENUM()
