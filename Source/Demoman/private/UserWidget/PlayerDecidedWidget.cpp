@@ -12,11 +12,21 @@
 
 void UPlayerDecidedWidget::NativeConstruct()
 {
+	//NameSlot->SetVisibility(ESlateVisibility::Collapsed);
+	//BAddBotToSlot->SetVisibility(ESlateVisibility::Collapsed);
+	//BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
+
+	BJoinSlot->OnClicked.AddDynamic(this, &UPlayerDecidedWidget::OnClickedJoinButton);
+}
+
+bool UPlayerDecidedWidget::Initialize()
+{
+	bool superResult = Super::Initialize();
 	NameSlot->SetVisibility(ESlateVisibility::Collapsed);
 	BAddBotToSlot->SetVisibility(ESlateVisibility::Collapsed);
 	BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
 
-	BJoinSlot->OnClicked.AddDynamic(this, &UPlayerDecidedWidget::OnClickedJoinButton);
+	return superResult;
 }
 
 void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole)

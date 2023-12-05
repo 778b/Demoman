@@ -21,6 +21,7 @@ class DEMOMAN_API UPlayerDecidedWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	virtual bool Initialize() override;
 
 	void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
 	void SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole);
