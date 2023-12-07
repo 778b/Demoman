@@ -23,3 +23,38 @@ enum EPlayerLobbyRole
 	Admin,
 	Bot
 };
+
+
+namespace FDemomanUtils
+{
+	static FString ConvertNetRoleToString(ENetRole EnumToConvert)
+	{
+		switch (EnumToConvert)
+		{
+		case ENetRole::ROLE_Authority:
+			return "Authority";
+		case ENetRole::ROLE_AutonomousProxy:
+			return "AutonomousProxy";
+		case ENetRole::ROLE_SimulatedProxy:
+			return "SimulatedProxy";
+		}
+		return "None";
+	}
+
+	static FString ConvertNetModeToString(ENetMode EnumToConvert)
+	{
+		switch (EnumToConvert)
+		{
+		case ENetMode::NM_Client:
+			return "Client";
+		case ENetMode::NM_DedicatedServer:
+			return "DedicatedServer";
+		case ENetMode::NM_ListenServer:
+			return "ListenServer";
+		case ENetMode::NM_Standalone:
+			return "Standalone";
+		}
+		return "None";
+	}
+	
+}
