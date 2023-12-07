@@ -12,10 +12,6 @@
 
 void UPlayerDecidedWidget::NativeConstruct()
 {
-	//NameSlot->SetVisibility(ESlateVisibility::Collapsed);
-	//BAddBotToSlot->SetVisibility(ESlateVisibility::Collapsed);
-	//BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
-
 	BJoinSlot->OnClicked.AddDynamic(this, &UPlayerDecidedWidget::OnClickedJoinButton);
 }
 
@@ -31,16 +27,12 @@ bool UPlayerDecidedWidget::Initialize()
 
 void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole)
 {
-
 	// Slot is empty
 	if (Player == nullptr)
 	{
 		// Getting first free color
 		for (int32 i = 0; i < EPlayerLobbyTeam::Max; ++i)
 		{
-			//if (CurrentColors & (1 << i)) continue;
-
-			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | 1 << i);
 			PlayerLobbyColor = static_cast<EPlayerLobbyTeam>(i);
 			ColorSlot->SetBrushTintColor(SlotColors[i]);
 			break;
@@ -57,19 +49,15 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 			break;
 		case EPlayerLobbyTeam::Red:
 			ColorSlot->SetBrushTintColor(SlotColors[0]);
-			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Red);
 			break;
 		case EPlayerLobbyTeam::Blue:
 			ColorSlot->SetBrushTintColor(SlotColors[1]);
-			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Blue);
 			break;
 		case EPlayerLobbyTeam::Green:
 			ColorSlot->SetBrushTintColor(SlotColors[2]);
-			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Green);
 			break;
 		case EPlayerLobbyTeam::Yellow:
 			ColorSlot->SetBrushTintColor(SlotColors[3]);
-			//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Yellow);
 			break;
 		}
 		PlayerLobbyColor = Player->GetPlayerLobbyState();
@@ -93,19 +81,15 @@ const void UPlayerDecidedWidget::UpdateColor()
 		break;
 	case EPlayerLobbyTeam::Red:
 		ColorSlot->SetBrushTintColor(SlotColors[0]);
-		//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Red);
 		break;
 	case EPlayerLobbyTeam::Blue:
 		ColorSlot->SetBrushTintColor(SlotColors[1]);
-		//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Blue);
 		break;
 	case EPlayerLobbyTeam::Green:
 		ColorSlot->SetBrushTintColor(SlotColors[2]);
-		//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Green);
 		break;
 	case EPlayerLobbyTeam::Yellow:
 		ColorSlot->SetBrushTintColor(SlotColors[3]);
-		//CurrentColors = (EPlayerLobbyTeam)(CurrentColors | Yellow);
 		break;
 	}
 }
