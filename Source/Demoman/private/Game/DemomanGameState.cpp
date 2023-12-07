@@ -9,6 +9,7 @@
 #include "Player/GamePlayerState.h"
 #include "Player/PlayerCharacter.h"
 
+DEFINE_LOG_CATEGORY(GameStateLog);
 
 ADemomanGameState::ADemomanGameState()
 {
@@ -44,12 +45,15 @@ void ADemomanGameState::UpdateWidget_Implementation()
 	}
 #endif
 
+	UE_LOG(GameStateLog, Display, TEXT("Widget update"));
+
 	OnUpdateWidgetDelegate.ExecuteIfBound();
 }
 
 
 void ADemomanGameState::UpdateLobbyWidget_Implementation()
 {
+	UE_LOG(GameStateLog, Display, TEXT("Lobby widget update"));
 	OnUpdateWidgetDelegate.ExecuteIfBound();
 	UpdateWidget();
 }
@@ -88,6 +92,7 @@ void ADemomanGameState::StartGame()
 		AGamePlayerState* TempPlayerState = Cast<AGamePlayerState>(tempPlayer);
 		checkf(TempPlayerState, TEXT("GameState cant find player state"));
 
+		UE_LOG(GameStateLog, Display, TEXT("Game start"));
 		TempPlayerState->OnStartGame();
 	}
 }
@@ -102,6 +107,9 @@ void ADemomanGameState::OnPostLoginEvent(AGameModeBase* GameMode, APlayerControl
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	++TempSessionSettings->NumPrivateConnections;
+	
+	UE_LOG(GameStateLog, Display, TEXT("Loggin event, connected %s"), *NewPlayer->GetHumanReadableName());
+
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
 }
 
@@ -115,15 +123,28 @@ void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exit
 	const IOnlineSessionPtr SessionPtr = Online::GetSessionInterface(GetWorld());
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	--TempSessionSettings->NumPrivateConnections;
+
+	UE_LOG(GameStateLog, Display, TEXT("Logout event, disconnected %s"), *Exiting->GetHumanReadableName());
+
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
 }
 
 void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
 {
+	UE_LOG(GameStateLog, Display, TEXT("Registered complete"));
+	for (auto player : Players)
+	{
+		UE_LOG(GameStateLog, Display, TEXT("Registered event, player %s"), *player.Get().ToDebugString());
+	}
 	UpdateWidget();
 }
 
 void ADemomanGameState::OnUnregisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
 {
+	UE_LOG(GameStateLog, Display, TEXT("Unregistered complete"));
+	for (auto player : Players)
+	{
+		UE_LOG(GameStateLog, Display, TEXT("Unregistered event, player %s"), *player.Get().ToDebugString());
+	}
 	UpdateWidget();
 }

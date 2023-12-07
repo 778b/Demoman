@@ -9,6 +9,7 @@
 
 DECLARE_DELEGATE(FOnUpdateWidget);
 
+DECLARE_LOG_CATEGORY_EXTERN(GameStateLog, Log, All);
 
 UCLASS()
 class DEMOMAN_API ADemomanGameState : public AGameStateBase
