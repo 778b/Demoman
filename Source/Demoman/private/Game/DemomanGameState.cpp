@@ -6,6 +6,7 @@
 #include "Game/CSNetworkSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Player/GamePlayerController.h"
+#include "DemomanUtils.h"
 #include "Player/GamePlayerState.h"
 #include "Player/PlayerCharacter.h"
 
@@ -31,21 +32,17 @@ ADemomanGameState::ADemomanGameState()
 
 void ADemomanGameState::UpdateWidget_Implementation()
 {
-#ifdef UE_BUILD_DEVELOPMENT
+	APlayerState* tempPlayerState = nullptr;
+
 	if (GetWorld() && GetGameInstance())
 	{
 		// Getting local player state
-		APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
 			GetGameInstance()->GetPrimaryPlayerUniqueId());
-
-		FString TempName = tempPlayerState ? tempPlayerState->GetPlayerName() : TEXT("UnknownPlayerName");
-
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Magenta, TempName);
-
 	}
-#endif
 
-	UE_LOG(GameStateLog, Display, TEXT("Widget update"));
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Widget update"), 
+		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()): TEXT("UnknownMode"));
 
 	OnUpdateWidgetDelegate.ExecuteIfBound();
 }
@@ -53,7 +50,10 @@ void ADemomanGameState::UpdateWidget_Implementation()
 
 void ADemomanGameState::UpdateLobbyWidget_Implementation()
 {
-	UE_LOG(GameStateLog, Display, TEXT("Lobby widget update"));
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
+
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Lobby widget update"), tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 	OnUpdateWidgetDelegate.ExecuteIfBound();
 	UpdateWidget();
 }
@@ -87,12 +87,15 @@ void ADemomanGameState::Server_StartGameTimer_Implementation()
 
 void ADemomanGameState::StartGame()
 {
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
+
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Game start"), tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 	for (APlayerState* tempPlayer : GetWorld()->GetGameState()->PlayerArray)
 	{
 		AGamePlayerState* TempPlayerState = Cast<AGamePlayerState>(tempPlayer);
 		checkf(TempPlayerState, TEXT("GameState cant find player state"));
 
-		UE_LOG(GameStateLog, Display, TEXT("Game start"));
 		TempPlayerState->OnStartGame();
 	}
 }
@@ -101,6 +104,9 @@ void ADemomanGameState::OnPostLoginEvent(AGameModeBase* GameMode, APlayerControl
 {
 	if (!GetWorld()) return;
 
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
+
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
 
@@ -108,14 +114,20 @@ void ADemomanGameState::OnPostLoginEvent(AGameModeBase* GameMode, APlayerControl
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	++TempSessionSettings->NumPrivateConnections;
 	
-	UE_LOG(GameStateLog, Display, TEXT("Loggin event, connected %s"), *NewPlayer->GetHumanReadableName());
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Loggin event, connected %s"),
+		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *NewPlayer->GetHumanReadableName());
 
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
+
+	UpdateWidget();
 }
 
 void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting)
 {
 	if (!GetWorld()) return;
+
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
 
 	UCSNetworkSubsystem* NetworkSys = GetGameInstance()->GetSubsystem<UCSNetworkSubsystem>();
 	checkf(NetworkSys, TEXT("SessionWidget missed NetworkSystem"));
@@ -124,27 +136,39 @@ void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exit
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	--TempSessionSettings->NumPrivateConnections;
 
-	UE_LOG(GameStateLog, Display, TEXT("Logout event, disconnected %s"), *Exiting->GetHumanReadableName());
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Logout event, disconnected %s"),
+		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *Exiting->GetHumanReadableName());
 
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
+
+	UpdateWidget();
 }
 
 void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
 {
-	UE_LOG(GameStateLog, Display, TEXT("Registered complete"));
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
+
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Registered complete"),
+		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 	for (auto player : Players)
 	{
-		UE_LOG(GameStateLog, Display, TEXT("Registered event, player %s"), *player.Get().ToDebugString());
+		UE_LOG(GameStateLog, Display, TEXT("[%s] Registered event, player %s")
+			, tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
 	}
 	UpdateWidget();
 }
 
 void ADemomanGameState::OnUnregisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
 {
-	UE_LOG(GameStateLog, Display, TEXT("Unregistered complete"));
+	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
+		GetGameInstance()->GetPrimaryPlayerUniqueId());
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Unregistered complete"), 
+		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 	for (auto player : Players)
 	{
-		UE_LOG(GameStateLog, Display, TEXT("Unregistered event, player %s"), *player.Get().ToDebugString());
+		UE_LOG(GameStateLog, Display, TEXT("[%s] Unregistered event, player %s"), 
+			tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
 	}
 	UpdateWidget();
 }
