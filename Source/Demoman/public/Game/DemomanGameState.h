@@ -21,14 +21,13 @@ public:
 	ADemomanGameState();
 
 	UFUNCTION(Reliable, Server)
-		void UpdateLobbyWidget();
-		void UpdateLobbyWidget_Implementation();
+		void Server_UpdateWidget();
+		void Server_UpdateWidget_Implementation();
 
 	UFUNCTION(Reliable, Server)
 		void Server_StartGameTimer();
 		void Server_StartGameTimer_Implementation();
 
-	
 protected:
 	virtual void OnRegisteredPlayersCompleted(FName sessionName, const TArray< FUniqueNetIdRef >& Players, bool Result);
 	virtual void OnUnregisteredPlayersCompleted(FName sessionName, const TArray< FUniqueNetIdRef >& Players, bool Result);

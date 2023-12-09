@@ -59,9 +59,9 @@ void ADemomanGameState::UpdateLobbyWidget_Implementation()
 
 	UE_LOG(GameStateLog, Display, TEXT("[%s] Lobby widget update"), tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 
-	OnUpdateWidgetDelegate.ExecuteIfBound();
+	//OnUpdateWidgetDelegate.ExecuteIfBound();
 	//тут мультивызов надо чето придумать
-	//UpdateWidget();
+	UpdateWidget();
 }
 
 void ADemomanGameState::Server_StartGameTimer_Implementation()
@@ -125,7 +125,7 @@ void ADemomanGameState::OnPostLoginEvent(AGameModeBase* GameMode, APlayerControl
 
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
 
-	UpdateWidget();
+	Server_UpdateWidget();
 }
 
 void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exiting)
@@ -147,6 +147,13 @@ void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exit
 
 	SessionPtr->UpdateSession(NetworkSys->LastSessionName, *TempSessionSettings);
 
+	Server_UpdateWidget();
+}
+
+void ADemomanGameState::Server_UpdateWidget_Implementation()
+{
+
+	UE_LOG(GameStateLog, Display, TEXT("[%s] Server_UpdateWidget"));
 	UpdateWidget();
 }
 
@@ -162,7 +169,7 @@ void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TA
 		UE_LOG(GameStateLog, Display, TEXT("[%s] Registered event, player %s")
 			, tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
 	}
-	UpdateWidget();
+	Server_UpdateWidget();
 }
 
 void ADemomanGameState::OnUnregisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
@@ -176,5 +183,5 @@ void ADemomanGameState::OnUnregisteredPlayersCompleted(FName sessionName, const 
 		UE_LOG(GameStateLog, Display, TEXT("[%s] Unregistered event, player %s"), 
 			tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
 	}
-	UpdateWidget();
+	Server_UpdateWidget();
 }

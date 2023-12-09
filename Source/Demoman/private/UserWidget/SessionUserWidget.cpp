@@ -42,7 +42,7 @@ void USessionUserWidget::NativeConstruct()
 	BJoinUndecided->OnClicked.AddDynamic(this, &USessionUserWidget::OnClickedUndecidedButton);
 
 	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
-	tempState->UpdateLobbyWidget();
+	//tempState->UpdateLobbyWidget();
 
 	ConstructWidget();
 }
@@ -142,18 +142,6 @@ void USessionUserWidget::SetupPlayersInLobby()
 	FOnlineSessionSettings* TempSessionSettings = SessionPtr->GetSessionSettings(NetworkSys->LastSessionName);
 	checkf(TempSessionSettings, TEXT("SessionWidget missed SessionSettings"));
 
-	/*
-	// Creating empty decided slot widget with current players
-	for (int32 i = DecidedPlayersCount; i < TempSessionSettings->NumPublicConnections; ++i)
-	{
-		UPlayerDecidedWidget* tempWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
-		checkf(tempWidget, TEXT("SessionWidget missed slots"));
-		tempWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
-		tempWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
-		DecidedUnsorted.Add(tempWidget);
-	}
-	*/
-
 	// Sort decided players
 	for (int32 i = 1; i < EPlayerLobbyTeam::Max; ++i)
 	{
@@ -189,7 +177,10 @@ void USessionUserWidget::SetupDefaultSettings()
 
 void USessionUserWidget::UpdateWidgetSettings()
 {
-	SetupPlayersInLobby();
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_UpdateWidget();
+	//SetupPlayersInLobby();
 }
 
 void USessionUserWidget::OnPostLoginEvent(AGameModeBase* GameMode, APlayerController* NewPlayer)
@@ -226,13 +217,19 @@ void USessionUserWidget::OnClickedUndecidedButton()
 	// Local update widget
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
-	tempState->UpdateLobbyWidget();
+	tempState->Server_UpdateWidget();
 }
 
 void USessionUserWidget::OnClickedLeaveButton()
 {
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_UpdateWidget();
 }
 
 void USessionUserWidget::OnClickedStartButton()
 {
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_UpdateWidget();
 }
