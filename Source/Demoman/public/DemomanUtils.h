@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
+#include "Game/DemomanGameModeBase.h"
 
 UENUM()
 enum EPlayerLobbyTeam

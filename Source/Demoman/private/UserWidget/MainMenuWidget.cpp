@@ -8,7 +8,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "OnlineSubsystem.h" // IWYU pragma: keep
-#include "OnlineError.h"
+#include "Engine/GameInstance.h"
 #include "UserWidget/FindedSessionWidget.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"

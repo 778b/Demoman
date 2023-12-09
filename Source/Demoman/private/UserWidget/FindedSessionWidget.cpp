@@ -5,9 +5,9 @@
 
 #include "Components/TextBlock.h"
 #include "Game/CSNetworkSubsystem.h"
-#include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
-#include "OnlineSubsystem.h" // IWYU pragma: keep
+#include "OnlineSessionSettings.h"
+#include "Engine/GameInstance.h"
 
 
 

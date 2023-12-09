@@ -3,6 +3,7 @@
 #include "ItemsFactory.h"
 
 #include "AudioDeviceManager.h"
+#include "Engine/World.h"
 #include "Item/BasePickableItems.h"
 
 FItemsFactory::FItemsFactory()
@@ -23,7 +24,7 @@ FItemsFactory* FItemsFactory::GetFactory()
 
 ABasePickableItems* FItemsFactory::CreateItemInLocation(UWorld* World, FVector Location)
 {	
-	int32 randNum = FMath::Rand() % RegisteredItems.Num();
+	const int32 randNum = FMath::Rand() % RegisteredItems.Num();
 	return World->SpawnActor<ABasePickableItems>(RegisteredItems[randNum], FTransform(FRotator(0.f), Location, FVector(1.f)));
 }
 

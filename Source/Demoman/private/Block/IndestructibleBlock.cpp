@@ -4,6 +4,8 @@
 #include "Block/IndestructibleBlock.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Materials/MaterialInterface.h"
+#include "Components/StaticMeshComponent.h"
 
 AIndestructibleBlock::AIndestructibleBlock()
 {

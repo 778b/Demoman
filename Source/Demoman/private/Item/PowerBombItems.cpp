@@ -4,6 +4,8 @@
 
 #include "ItemsFactory.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "Game/BaseCharacter.h"
 
 APowerBombItems::APowerBombItems()

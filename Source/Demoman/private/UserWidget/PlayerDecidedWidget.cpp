@@ -6,6 +6,7 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Engine/GameInstance.h"
 #include "Game/DemomanGameState.h"
 #include "Player/GamePlayerState.h"
 

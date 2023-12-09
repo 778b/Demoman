@@ -3,6 +3,7 @@
 #include "Block/DefaultBlock.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstance.h"
 
 ADefaultBlock::ADefaultBlock()

@@ -11,7 +11,7 @@
 #include "UserWidget/PlayerDecidedWidget.h"
 #include "Game/CSNetworkSubsystem.h"
 #include "Game/DemomanGameState.h"
-#include "Player/GamePlayerController.h"
+#include "Engine/GameInstance.h"
 #include "Player/GamePlayerState.h"
 #include "Player/PlayerCharacter.h"
 

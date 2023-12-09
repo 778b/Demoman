@@ -4,6 +4,8 @@
 #include "Block/SupriseBlock.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInterface.h"
 
 ASupriseBlock::ASupriseBlock()
 {

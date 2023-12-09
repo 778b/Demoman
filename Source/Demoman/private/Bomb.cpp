@@ -6,6 +6,9 @@
 #include "Particles/ParticleSystem.h"
 #include "UObject/ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
+#include "Engine/StaticMesh.h"
 #include "DamageInterface.h"
 #include "Components/StaticMeshComponent.h"
 

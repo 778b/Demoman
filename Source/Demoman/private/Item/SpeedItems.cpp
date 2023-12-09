@@ -4,6 +4,8 @@
 
 #include "ItemsFactory.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Materials/MaterialInterface.h"
+#include "Components/StaticMeshComponent.h"
 #include "Game/BaseCharacter.h"
 
 ASpeedItems::ASpeedItems()

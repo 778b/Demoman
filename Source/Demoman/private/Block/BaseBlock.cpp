@@ -5,7 +5,8 @@
 #include "ItemsFactory.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "Materials/MaterialInterface.h"
+#include "Engine/StaticMesh.h"
 
 
 

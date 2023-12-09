@@ -5,11 +5,12 @@
 
 #include "Game/CSNetworkSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "Interfaces/OnlineSessionDelegates.h"
+#include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h" // IWYU pragma: keep
 #include "OnlineSessionSettings.h"
 #include "Player/GamePlayerController.h"
 #include "DemomanUtils.h"
+#include "TimerManager.h"
 #include "Player/GamePlayerState.h"
 #include "Player/PlayerCharacter.h"
 

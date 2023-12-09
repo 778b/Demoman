@@ -7,6 +7,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/GamePlayerController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Engine/GameInstance.h"
 #include "UserWidget/PlayerUndecidedWidget.h"
 #include "UserWidget/PlayerDecidedWidget.h"
 
