@@ -42,7 +42,7 @@ void USessionUserWidget::NativeConstruct()
 	BJoinUndecided->OnClicked.AddDynamic(this, &USessionUserWidget::OnClickedUndecidedButton);
 
 	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
-	//tempState->UpdateLobbyWidget();
+	tempState->Server_UpdateWidget();
 
 	ConstructWidget();
 }

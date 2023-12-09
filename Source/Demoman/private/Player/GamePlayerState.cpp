@@ -43,7 +43,8 @@ void AGamePlayerState::SetPlayerLobbyState_Implementation(EPlayerLobbyTeam newSt
 		if (newState != Undecided && CastedState->PlayerLobbyState == newState)
 		{
 			ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
-			tempState->UpdateLobbyWidget();
+			checkf(tempState, TEXT("SessionWidget missed GameState"));
+			tempState->Server_UpdateWidget();
 			return;
 		};
 	}
@@ -56,12 +57,12 @@ void AGamePlayerState::SetPlayerLobbyStateClient_Implementation(EPlayerLobbyTeam
 {
 	PlayerLobbyState = newState;
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
-	tempState->UpdateLobbyWidget();
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_UpdateWidget();
 }
 
 void AGamePlayerState::OnPrepareGame_Implementation()
 {
-	
 	AGamePlayerController* TempPlayerController = Cast<AGamePlayerController>(
 		GetGameInstance()->GetFirstLocalPlayerController()->GetLocalPlayer()->GetPlayerController(GetWorld()));
 	TempPlayerController->OnPrepareGame();
@@ -79,5 +80,6 @@ void AGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AGamePlayerState, PlayerLobbyState);
+	DOREPLIFETIME(AGamePlayerState, PlayerLobbyRole);
 }
 

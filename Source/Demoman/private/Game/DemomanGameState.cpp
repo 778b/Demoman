@@ -51,19 +51,6 @@ void ADemomanGameState::UpdateWidget_Implementation()
 	OnUpdateWidgetDelegate.ExecuteIfBound();
 }
 
-
-void ADemomanGameState::UpdateLobbyWidget_Implementation()
-{
-	APlayerState* tempPlayerState = GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
-		GetGameInstance()->GetPrimaryPlayerUniqueIdRepl());
-
-	UE_LOG(GameStateLog, Display, TEXT("[%s] Lobby widget update"), tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
-
-	//OnUpdateWidgetDelegate.ExecuteIfBound();
-	//тут мультивызов надо чето придумать
-	UpdateWidget();
-}
-
 void ADemomanGameState::Server_StartGameTimer_Implementation()
 {
 	for (APlayerState* tempPlayer : GetWorld()->GetGameState()->PlayerArray)
