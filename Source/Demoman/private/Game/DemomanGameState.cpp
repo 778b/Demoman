@@ -47,8 +47,6 @@ void ADemomanGameState::UpdateWidget_Implementation()
 
 	UE_LOG(GameStateLog, Display, TEXT("[%s] Widget update"), 
 		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()): TEXT("UnknownMode"));
-
-	OnUpdateWidgetDelegate.ExecuteIfBound();
 }
 
 void ADemomanGameState::Server_StartGameTimer_Implementation()
@@ -139,9 +137,15 @@ void ADemomanGameState::OnLogoutEvent(AGameModeBase* GameMode, AController* Exit
 
 void ADemomanGameState::Server_UpdateWidget_Implementation()
 {
-
-	UE_LOG(GameStateLog, Display, TEXT("[%s] Server_UpdateWidget"));
-	UpdateWidget();
+	for (auto tempPlayer : PlayerArray) {
+		auto tempCastedPlayer = Cast<AGamePlayerState>(tempPlayer);
+		if (IsValid(tempCastedPlayer))
+		{
+			tempCastedPlayer->Client_UpdatePlayerWidget();
+		}
+	}
+	//UE_LOG(GameStateLog, Display, TEXT("[%s] Server_UpdateWidget"));
+	//UpdateWidget();
 }
 
 void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TArray<FUniqueNetIdRef>& Players, bool Result)
@@ -153,8 +157,8 @@ void ADemomanGameState::OnRegisteredPlayersCompleted(FName sessionName, const TA
 		tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"));
 	for (auto player : Players)
 	{
-		UE_LOG(GameStateLog, Display, TEXT("[%s] Registered event, player %s")
-			, tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
+		UE_LOG(GameStateLog, Display, TEXT("[%s] Registered event, player %s"),
+			tempPlayerState ? *FDemomanUtils::ConvertNetModeToString(tempPlayerState->GetNetMode()) : TEXT("UnknownMode"), *player.Get().ToDebugString());
 	}
 	Server_UpdateWidget();
 }

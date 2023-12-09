@@ -12,6 +12,7 @@ class UPlayerDecidedWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdatePlayerState);
 
+DECLARE_MULTICAST_DELEGATE(FOnUpdateWidget);
 
 UCLASS()
 class DEMOMAN_API AGamePlayerState : public APlayerState
@@ -23,6 +24,14 @@ public:
 
 	UFUNCTION()
 		EPlayerLobbyTeam GetPlayerLobbyState();
+
+	UFUNCTION(Reliable, Server)
+		void Server_UpdatePlayerWidget();
+		void Server_UpdatePlayerWidget_Implementation();
+
+	UFUNCTION(Reliable,	Client)
+		void Client_UpdatePlayerWidget();
+		void Client_UpdatePlayerWidget_Implementation();
 
 	UFUNCTION(Reliable, Server)
 		void SetPlayerLobbyState(EPlayerLobbyTeam newState);
@@ -50,7 +59,8 @@ public:
 	TSubclassOf<UPlayerDecidedWidget> PlayerDecidedWidgetClass;
 
 	FOnUpdatePlayerState OnUpdatePlayerStateDelegate;
-
+	
+	FOnUpdateWidget OnUpdateWidgetDelegate;
 protected:
 	UPROPERTY(Replicated)
 		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;

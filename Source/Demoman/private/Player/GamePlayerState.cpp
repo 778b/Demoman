@@ -34,6 +34,18 @@ EPlayerLobbyTeam AGamePlayerState::GetPlayerLobbyState()
 	return PlayerLobbyState;
 }
 
+void AGamePlayerState::Server_UpdatePlayerWidget_Implementation()
+{
+	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	checkf(tempState, TEXT("SessionWidget missed GameState"));
+	tempState->Server_UpdateWidget();
+}
+
+void AGamePlayerState::Client_UpdatePlayerWidget_Implementation()
+{
+	OnUpdateWidgetDelegate.Broadcast();
+}
+
 void AGamePlayerState::SetPlayerLobbyState_Implementation(EPlayerLobbyTeam newState)
 {
 	// Checking selected state for busy

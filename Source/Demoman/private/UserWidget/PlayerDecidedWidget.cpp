@@ -109,7 +109,7 @@ void UPlayerDecidedWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
-	tempState->Server_UpdateWidget();
+	//tempState->Server_UpdateWidget();
 }
 
 void UPlayerDecidedWidget::AddBotToGame_Implementation()

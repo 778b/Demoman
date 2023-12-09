@@ -27,8 +27,9 @@ void USessionUserWidget::NativeConstruct()
 	ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
 	checkf(tempState, TEXT("SessionWidget missed GameState"));
 
-	if (const AGamePlayerState* tempPlayerState = GetOwningPlayerState<AGamePlayerState>())
+	if (AGamePlayerState* tempPlayerState = GetOwningPlayerState<AGamePlayerState>())
 	{
+		tempPlayerState->OnUpdateWidgetDelegate.AddUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 		if (tempPlayerState->PlayerLobbyRole == Admin)
 		{
 			BStartGame->SetVisibility(ESlateVisibility::Visible);
@@ -41,7 +42,6 @@ void USessionUserWidget::NativeConstruct()
 
 	BJoinUndecided->OnClicked.AddDynamic(this, &USessionUserWidget::OnClickedUndecidedButton);
 
-	tempState->OnUpdateWidgetDelegate.BindUObject(this, &USessionUserWidget::SetupPlayersInLobby);
 	tempState->Server_UpdateWidget();
 
 	ConstructWidget();

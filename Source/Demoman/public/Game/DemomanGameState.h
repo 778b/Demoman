@@ -8,8 +8,6 @@
 #include "DemomanGameState.generated.h"
 
 
-DECLARE_DELEGATE(FOnUpdateWidget);
-
 DECLARE_LOG_CATEGORY_EXTERN(GameStateLog, Log, All);
 
 UCLASS()
@@ -42,8 +40,7 @@ private:
 		void UpdateWidget();
 		void UpdateWidget_Implementation();
 
-public:
-	FOnUpdateWidget OnUpdateWidgetDelegate;
+
 
 private:
 	FTimerHandle StartTimer;
