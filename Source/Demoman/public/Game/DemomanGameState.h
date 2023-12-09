@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "OnlineSubsystemTypes.h"
 #include "GameFramework/GameStateBase.h"
 #include "DemomanGameState.generated.h"
 

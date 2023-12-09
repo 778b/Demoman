@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "OnlineSubsystemUtils.h"
+#include "Interfaces/OnlineSessionInterface.h"
+
 #include "CSNetworkSubsystem.generated.h"
 
 
@@ -69,7 +71,7 @@ public:
 	void FindSessions(int32 MaxSearchResult, bool WantLan = false);
 
 	// Default getter for OnlineSessionSearch
-	FOnlineSessionSearch& GetLastSearchResult() { return LastSearchSettings.Get(); };
+	TSharedPtr<FOnlineSessionSearch> GetLastSearchResult() { return  LastSearchSettings; };
 
 protected:
 	/**
@@ -141,7 +143,7 @@ public:
 	FName LastSessionName;
 
 protected:
-	const TSharedRef<FOnlineSessionSearch> LastSearchSettings = MakeShareable(new FOnlineSessionSearch);
+	TSharedPtr<FOnlineSessionSearch> LastSearchSettings;
 
 private:
 	// private Delegate which executing OnJoinSessionCompleteEvent

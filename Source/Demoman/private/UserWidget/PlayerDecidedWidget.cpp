@@ -99,7 +99,7 @@ void UPlayerDecidedWidget::OnJoinTeam(EPlayerLobbyTeam SelectedLobby)
 	// Client only function all settings get from our local player
 	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
 		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
-			GetGameInstance()->GetPrimaryPlayerUniqueId()));
+			GetGameInstance()->GetPrimaryPlayerUniqueIdRepl()));
 
 	// Player press button before join 
 	if (!tempPlayerState) return;

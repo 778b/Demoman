@@ -100,7 +100,7 @@ void USessionUserWidget::SetupPlayersInLobby()
 	// Getting TRUE local player for our client
 	AGamePlayerState* OwnerPlayerState = Cast<AGamePlayerState>(
 		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
-			GetGameInstance()->GetPrimaryPlayerUniqueId()));
+			GetGameInstance()->GetPrimaryPlayerUniqueIdRepl()));
 	checkf(OwnerPlayerState, TEXT("SessionWidget missed OwnerPlayerState"));
 	if (!OwnerPlayerState) return;
 
@@ -218,7 +218,7 @@ void USessionUserWidget::OnClickedUndecidedButton()
 {
 	AGamePlayerState* tempPlayerState = Cast<AGamePlayerState>(
 		GetOwningPlayer()->GetWorld()->GetGameState()->GetPlayerStateFromUniqueNetId(
-			GetGameInstance()->GetPrimaryPlayerUniqueId()));
+			GetGameInstance()->GetPrimaryPlayerUniqueIdRepl()));
 
 	tempPlayerState->SetPlayerLobbyState(Undecided);
 	OnOwnerChangedTeam(Undecided);

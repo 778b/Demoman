@@ -5,6 +5,10 @@
 
 #include "UObject/ConstructorHelpers.h"
 #include "Player/MenuPlayerController.h"
+#include "Interfaces/OnlineSessionInterface.h"
+#include "Interfaces/OnlineSessionDelegates.h"
+#include "OnlineSubsystem.h" // IWYU pragma: keep
+#include "OnlineError.h"
 #include "UserWidget/FindedSessionWidget.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
@@ -69,8 +73,9 @@ void UMainMenuWidget::OnCompleteSessionFinding(bool bIsSuccess)
 		AMenuPlayerController* TempController = GetOwningPlayer<AMenuPlayerController>();
 		checkf(TempController, TEXT("MainMenu missed Player Controller"));
 
-		LastSearchSettings = NetworkSystem->GetLastSearchResult();
-		for (FOnlineSessionSearchResult& Session : LastSearchSettings.SearchResults)
+		auto lastResultPtr = NetworkSystem->GetLastSearchResult();
+		LastSearchSettings = lastResultPtr.Get();
+		for (FOnlineSessionSearchResult& Session : LastSearchSettings->SearchResults)
 		{
 			UFindedSessionWidget* TempWidget = CreateWidget<UFindedSessionWidget>(TempController, TempController->GetFindedSessionClass());
 			checkf(TempWidget, TEXT("MainMenu cant create Widget of session"));

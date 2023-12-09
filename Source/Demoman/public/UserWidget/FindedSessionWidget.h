@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "OnlineSubsystemUtils.h"
+#include "OnlineSessionSettings.h"
 
 #include "FindedSessionWidget.generated.h"
 

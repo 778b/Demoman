@@ -6,7 +6,11 @@
 #include "Player/MenuPlayerController.h"
 #include "UserWidget/SessionUserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "OnlineSessionSettings.h"
+#include "Online/OnlineSessionNames.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Interfaces/OnlineSessionDelegates.h"
+#include "OnlineSubsystem.h" // IWYU pragma: keep
 
 
 UCSNetworkSubsystem::UCSNetworkSubsystem()
@@ -16,6 +20,8 @@ UCSNetworkSubsystem::UCSNetworkSubsystem()
 	OnFindSessionsCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnFindSessionsCompleted);
 	OnStartSessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnStartSessionCompleted);
 	OnDestroySessionCompleteDelegate.BindUObject(this, &UCSNetworkSubsystem::OnDestroySessionCompleted);
+
+	LastSearchSettings = MakeShareable(new FOnlineSessionSearch());
 }
 
 /*
@@ -111,7 +117,7 @@ void UCSNetworkSubsystem::FindSessions(int32 MaxSearchResult, bool WantLan)
 	LastSearchSettings->TimeoutInSeconds = 1000;
 
 	const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	SessionPtr->FindSessions(*localPlayer->GetPreferredUniqueNetId(), LastSearchSettings);
+	SessionPtr->FindSessions(*localPlayer->GetPreferredUniqueNetId(), LastSearchSettings.ToSharedRef());
 }
 
 

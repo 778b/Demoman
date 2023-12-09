@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "OnlineSubsystemUtils.h"
+#include "OnlineSessionSettings.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MainMenuWidget.generated.h"
 
 
@@ -43,7 +45,7 @@ public:
 private:
 	FName SelectedGameLevel;
 
-	FOnlineSessionSearch LastSearchSettings;
+	FOnlineSessionSearch* LastSearchSettings;
 
 	virtual void OnCompleteSessionCreate(FName SessionName, bool Result);
 	virtual void OnCompleteSessionFinding(bool bIsSuccess);

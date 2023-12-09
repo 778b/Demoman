@@ -52,7 +52,7 @@ void AGamePlayerController::BeginPlay()
 
 void AGamePlayerController::OnPrepareGame()
 {
-	SessionWidget->RemoveFromViewport();
+	SessionWidget->RemoveFromParent();
 	
 	if (!GameWidget) CreateGameWidget();
 	GameWidget->StartGameAnimation();
