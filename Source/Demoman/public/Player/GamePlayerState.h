@@ -5,10 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "DemomanUtils.h"
+#include "TimerManager.h"
 #include "GamePlayerState.generated.h"
 
 class UPlayerUndecidedWidget;
 class UPlayerDecidedWidget;
+
+DECLARE_LOG_CATEGORY_EXTERN(PlayerStateLog, Log, All);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdatePlayerState);
 
@@ -49,6 +52,8 @@ public:
 		void OnStartGame();
 		void OnStartGame_Implementation();
 
+	void BeginPlay() override;
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
@@ -61,6 +66,8 @@ public:
 	FOnUpdatePlayerState OnUpdatePlayerStateDelegate;
 	
 	FOnUpdateWidget OnUpdateWidgetDelegate;
+
+	FTimerHandle WaitAfterJoin;
 protected:
 	UPROPERTY(Replicated)
 		TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyState;

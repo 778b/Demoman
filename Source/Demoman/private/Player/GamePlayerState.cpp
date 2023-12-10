@@ -8,8 +8,11 @@
 #include "Player/GamePlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/GameInstance.h"
+#include "TimerManager.h"
 #include "UserWidget/PlayerUndecidedWidget.h"
 #include "UserWidget/PlayerDecidedWidget.h"
+
+DEFINE_LOG_CATEGORY(PlayerStateLog);
 
 AGamePlayerState::AGamePlayerState()
 {
@@ -85,6 +88,14 @@ void AGamePlayerState::OnStartGame_Implementation()
 	AGamePlayerController* TempPlayerController = Cast<AGamePlayerController>(
 		GetGameInstance()->GetFirstLocalPlayerController()->GetLocalPlayer()->GetPlayerController(GetWorld()));
 	TempPlayerController->OnStartGame();
+}
+
+void AGamePlayerState::BeginPlay()
+{
+	GetWorld()->GetTimerManager().SetTimer(WaitAfterJoin, FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget), 5.f, false);
+	//ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
+	//checkf(tempState, TEXT("SessionWidget missed GameState"));
+	//tempState->Server_UpdateWidget();
 }
 
 void AGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
