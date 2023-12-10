@@ -92,10 +92,9 @@ void AGamePlayerState::OnStartGame_Implementation()
 
 void AGamePlayerState::BeginPlay()
 {
-	GetWorld()->GetTimerManager().SetTimer(WaitAfterJoin, FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget), 5.f, false);
-	//ADemomanGameState* tempState = Cast<ADemomanGameState>(GetWorld()->GetGameState());
-	//checkf(tempState, TEXT("SessionWidget missed GameState"));
-	//tempState->Server_UpdateWidget();
+	Server_UpdatePlayerWidget();
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget));
+	//.SetTimer(WaitAfterJoin, FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget), 5.f, false);
 }
 
 void AGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
