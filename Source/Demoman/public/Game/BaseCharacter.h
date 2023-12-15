@@ -76,9 +76,15 @@ protected:
 
 private:
 	UMaterialInterface* DeadPlayerMaterial;
+
 	UMaterialInterface* RedPlayerMaterial;
 	UMaterialInterface* BluePlayerMaterial;
 	UMaterialInterface* YellowPlayerMaterial;
 	UMaterialInterface* GreenPlayerMaterial;
+
+	UMaterialInterface* PinkPlayerMaterial;
+	UMaterialInterface* BrownPlayerMaterial;
+	UMaterialInterface* CyanPlayerMaterial;
+	UMaterialInterface* PurplePlayerMaterial;
 
 };

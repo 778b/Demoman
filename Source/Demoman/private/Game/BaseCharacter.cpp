@@ -69,6 +69,26 @@ ABaseCharacter::ABaseCharacter()
 	{
 		YellowPlayerMaterial = YellowMaterialAsset.Object;
 	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> PinkMaterialAsset(TEXT("/Game/Material/Skin/M_PinkPlayer.M_PinkPlayer"));
+	if (YellowMaterialAsset.Succeeded())
+	{
+		PinkPlayerMaterial = PinkMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> BrownMaterialAsset(TEXT("/Game/Material/Skin/M_BrownPlayer.M_BrownPlayer"));
+	if (BrownMaterialAsset.Succeeded())
+	{
+		BrownPlayerMaterial = BrownMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> CyanMaterialAsset(TEXT("/Game/Material/Skin/M_CyanPlayer.M_CyanPlayer"));
+	if (CyanMaterialAsset.Succeeded())
+	{
+		CyanPlayerMaterial = CyanMaterialAsset.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> PurpleMaterialAsset(TEXT("/Game/Material/Skin/M_PurplePlayer.M_PurplePlayer"));
+	if (PurpleMaterialAsset.Succeeded())
+	{
+		PurplePlayerMaterial = PurpleMaterialAsset.Object;
+	}
 }
 
 void ABaseCharacter::AddBombsCount(int8 AddNum)
@@ -124,10 +144,22 @@ void ABaseCharacter::SetAutoTeamMaterial_Implementation()
 		PlayerModel->SetMaterial(0, YellowPlayerMaterial);
 		return;
 	case EPlayerLobbyTeam::Green:
-		PlayerModel->SetMaterial(0,GreenPlayerMaterial);
+		PlayerModel->SetMaterial(0, GreenPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Pink:
+		PlayerModel->SetMaterial(0, PinkPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Cyan:
+		PlayerModel->SetMaterial(0, CyanPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Brown:
+		PlayerModel->SetMaterial(0, BrownPlayerMaterial);
+		return;
+	case EPlayerLobbyTeam::Purple:
+		PlayerModel->SetMaterial(0, PurplePlayerMaterial);
 		return;
 	default:
-		checkf(true, TEXT("Game crashed, how u start game without selecting player state?"));
+		checkf(true, TEXT("How u start game without selecting player state?"));
 	}
 	
 }
