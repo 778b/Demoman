@@ -93,8 +93,7 @@ void AGamePlayerState::OnStartGame_Implementation()
 void AGamePlayerState::BeginPlay()
 {
 	Server_UpdatePlayerWidget();
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget));
-	//.SetTimer(WaitAfterJoin, FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget), 5.f, false);
+	GetWorld()->GetTimerManager().SetTimer(WaitAfterJoin, FTimerDelegate::CreateUObject(this, &AGamePlayerState::Server_UpdatePlayerWidget), 1.f, false);
 }
 
 void AGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
