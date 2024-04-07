@@ -143,7 +143,7 @@ void USessionUserWidget::SetupPlayersInLobby()
 	checkf(TempSessionSettings, TEXT("SessionWidget missed SessionSettings"));
 
 	// Sort decided players
-	for (int32 i = 1; i < EPlayerLobbyTeam::Max; ++i)
+	for (int32 i = 1; i < EPlayerLobbyTeam::Max; ++i)	// @TODO gamemode max player instead EPlayerLobbyTeam::Max
 	{
 		bool bIsFound = false;
 		for (UPlayerDecidedWidget* tempDecided : DecidedUnsorted)
@@ -158,11 +158,9 @@ void USessionUserWidget::SetupPlayersInLobby()
 		if (bIsFound) continue;
 
 		const auto tempEmptyWidget = CreateWidget<UPlayerDecidedWidget>(GetOwningPlayer(), OwnerPlayerState->PlayerDecidedWidgetClass);
+		tempEmptyWidget->SetupSettings(nullptr, OwnerPlayerState->PlayerLobbyRole);
 		tempEmptyWidget->FOnChangeTeamDelegate.BindUObject(this, &USessionUserWidget::OnOwnerChangedTeam);
-		// @todo rework with setter and getters
-		tempEmptyWidget->PlayerLobbyColor = static_cast<EPlayerLobbyTeam>(i);
-		tempEmptyWidget->UpdateColor();
-		//
+		tempEmptyWidget->UpdateColor(static_cast<EPlayerLobbyTeam>(i));
 		DecidedScrollBox->AddChild(tempEmptyWidget);
 	}
 }

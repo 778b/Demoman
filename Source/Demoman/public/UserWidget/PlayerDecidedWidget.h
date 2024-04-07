@@ -25,7 +25,7 @@ public:
 
 	void OnJoinTeam(EPlayerLobbyTeam SelectedLobby);
 	void SetupSettings(AGamePlayerState* Player, EPlayerLobbyRole OwnerRole);
-	const void UpdateColor();
+	const void UpdateColor(EPlayerLobbyTeam NewTeam);
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 		void AddBotToGame();
@@ -62,15 +62,12 @@ public:
 
 	TEnumAsByte<EPlayerLobbyTeam> PlayerLobbyColor;
 
+	static const FSlateColor SlotColors[8];
+
 	static EPlayerLobbyTeam CurrentColors;
 
 private:
 
-	const FSlateColor SlotColors[4]{	FLinearColor(1.f, 0.f, 0.f, 1.f),		// Red
-										FLinearColor(0.f, 0.f, 1.f, 1.f),		// Blue
-										FLinearColor(0.f, 0.7f, 0.f, 1.f), 		// Green
-										FLinearColor(1.f, 0.8, 0.f, 1.f) };		// Yellow
+	
 
 };
-
-EPlayerLobbyTeam UPlayerDecidedWidget::CurrentColors = Undecided;

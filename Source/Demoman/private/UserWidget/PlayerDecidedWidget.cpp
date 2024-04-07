@@ -11,6 +11,18 @@
 #include "Player/GamePlayerState.h"
 
 
+const FSlateColor UPlayerDecidedWidget::SlotColors[8] = { FSlateColor(FLinearColor(1.f, 0.f, 0.f, 1.f)),	// 0 Red
+												FSlateColor(FLinearColor(0.f, 0.f, 1.f, 1.f)),				// 1 Blue
+												FSlateColor(FLinearColor(0.f, 0.7f, 0.f, 1.f)), 			// 2 Green
+												FSlateColor(FLinearColor(1.f, 0.8f, 0.f, 1.f)),			// 3 Yellow
+												FSlateColor(FLinearColor(0.9f, 0.4f, 1.f, 1.f)),			// 4 Pink
+												FSlateColor(FLinearColor(0.3f, 0.16f, 0.6f, 1.f)),			// 5 Brown
+												FSlateColor(FLinearColor(0.f, 0.7f, 0.7f, 1.f)),			// 6 Cyan
+												FSlateColor(FLinearColor(0.2f, 0.f, 0.2f, 1.f))			// 7 Purple
+};
+
+EPlayerLobbyTeam UPlayerDecidedWidget::CurrentColors = Undecided;
+
 void UPlayerDecidedWidget::NativeConstruct()
 {
 	BJoinSlot->OnClicked.AddDynamic(this, &UPlayerDecidedWidget::OnClickedJoinButton);
@@ -40,28 +52,17 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 		}
 		ColorSlot->SetVisibility(ESlateVisibility::Visible);
 		BJoinSlot->SetVisibility(ESlateVisibility::Visible);
+		
+		if (OwnerRole == Admin)
+		{
+			BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
+			BKickSlot->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 	// Slot containing the player
 	else
 	{
-		switch (Player->GetPlayerLobbyState())
-		{
-		case EPlayerLobbyTeam::Undecided:
-			break;
-		case EPlayerLobbyTeam::Red:
-			ColorSlot->SetBrushTintColor(SlotColors[0]);
-			break;
-		case EPlayerLobbyTeam::Blue:
-			ColorSlot->SetBrushTintColor(SlotColors[1]);
-			break;
-		case EPlayerLobbyTeam::Green:
-			ColorSlot->SetBrushTintColor(SlotColors[2]);
-			break;
-		case EPlayerLobbyTeam::Yellow:
-			ColorSlot->SetBrushTintColor(SlotColors[3]);
-			break;
-		}
-		PlayerLobbyColor = Player->GetPlayerLobbyState();
+		UpdateColor(Player->GetPlayerLobbyState());
 		BJoinSlot->SetVisibility(ESlateVisibility::Collapsed);
 		NameSlot->SetText(FText::FromString(Player->GetPlayerName()));
 		NameSlot->SetVisibility(ESlateVisibility::Visible);
@@ -69,13 +70,14 @@ void UPlayerDecidedWidget::SetupSettings(AGamePlayerState* Player, EPlayerLobbyR
 		if (OwnerRole == Admin)
 		{
 			BKickSlot->SetVisibility(ESlateVisibility::Visible);
-			BAddBotToSlot->SetVisibility(ESlateVisibility::Visible);
+			BAddBotToSlot->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 }
 
-const void UPlayerDecidedWidget::UpdateColor()
+const void UPlayerDecidedWidget::UpdateColor(EPlayerLobbyTeam NewTeam)
 {
+	PlayerLobbyColor = NewTeam;
 	switch (PlayerLobbyColor)
 	{
 	case EPlayerLobbyTeam::Undecided:
@@ -91,6 +93,18 @@ const void UPlayerDecidedWidget::UpdateColor()
 		break;
 	case EPlayerLobbyTeam::Yellow:
 		ColorSlot->SetBrushTintColor(SlotColors[3]);
+		break;
+	case EPlayerLobbyTeam::Pink:
+		ColorSlot->SetBrushTintColor(SlotColors[4]);
+		break;
+	case EPlayerLobbyTeam::Brown:
+		ColorSlot->SetBrushTintColor(SlotColors[5]);
+		break;
+	case EPlayerLobbyTeam::Cyan:
+		ColorSlot->SetBrushTintColor(SlotColors[6]);
+		break;
+	case EPlayerLobbyTeam::Purple:
+		ColorSlot->SetBrushTintColor(SlotColors[7]);
 		break;
 	}
 }
